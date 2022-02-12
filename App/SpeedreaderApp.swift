@@ -6,15 +6,19 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct SpeedreaderApp: App {
-    @StateObject var currentBookVM: CurrentBookViewModel = CurrentBookViewModel()
 
+    init(){
+        FirebaseApp.configure()
+    }
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(currentBookVM)
+            ZStack{
+                ContentView()
+            }
         }
     }
 }

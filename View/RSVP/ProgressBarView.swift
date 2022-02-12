@@ -19,15 +19,18 @@ struct ProgressBarView: View {
         VStack {
             ZStack(alignment: .leading){
                 Rectangle()
-                    //.fill(Color(red: 222/255, green: 226/255, blue: 230/255))
-                    .fill(.white)
+                    .fill(Color.white)
                     .frame(width: progressBarWidth, height: 8, alignment: .leading)
                     .cornerRadius(30)
                 Rectangle()
-                    .overlay(LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accent]), startPoint: .leading, endPoint: .trailing))
+                    .overlay(LinearGradient(gradient: Gradient(colors: [Color.theme.accent, Color.theme.accent]), startPoint: .leading, endPoint: .trailing))
                     .frame(width: computedPercentage, height: 8, alignment: .leading)
                     .cornerRadius(30)
             }
+            .overlay(
+                RoundedRectangle(cornerRadius: 30)
+                    .stroke(Color.theme.accent, lineWidth: 2)
+            )
             HStack{
                 Text("103m:35s")
                     .foregroundColor(Color.theme.text)

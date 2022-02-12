@@ -13,16 +13,17 @@ struct ProfileListEntryView: View {
     var body: some View {
         NavigationLink(destination: entry.destination){
             HStack{
-                Image(systemName: entry.symbol)
+                ZStack {
+                    Image(systemName: entry.symbol)
+                }
+                .frame(width: 30)
                 Text("\(entry.title)")
                     .font(.title3)
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                    .opacity(/*@START_MENU_TOKEN@*/0.8/*@END_MENU_TOKEN@*/)
+                    //.opacity(/*@START_MENU_TOKEN@*/0.8/*@END_MENU_TOKEN@*/)
             } //:HSTACK
-            .padding()
-            .listRowBackground(Color.theme.primary)
+            .padding(.vertical)
         }
-        
     }
 }
 

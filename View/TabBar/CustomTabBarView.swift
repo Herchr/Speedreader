@@ -11,26 +11,33 @@ struct CustomTabBarView: View {
     @ObservedObject var vr: ViewRouter
     
     var body: some View {
-        HStack(spacing:0){
-            ForEach(vr.tabImages, id: \.self){ tabImage in
-                TabBarButton(image: tabImage, vr: vr)
+        VStack {
+            Spacer()
+            HStack(spacing:0){
+                ForEach(vr.tabImages, id: \.self){ tabImage in
+                    TabBarButton(image: tabImage, vr: vr)
+                }
             }
+            .padding(22)
+            .background(
+                Color.white
+                    .clipShape(TabCurve(tabPoint: CGFloat(vr.getCurvePoint()) - 15))
+            )
+            .overlay(
+                Circle()
+                    .fill(Color.theme.accent)
+                    .frame(width: 10, height: 10)
+                    .offset(x: CGFloat(vr.getCurvePoint()) - 20)
+                ,alignment: .bottomLeading
+            )
+            .mask(
+                RoundedRectangle(cornerRadius: 30, style: .continuous)
+            )
+            .padding(.horizontal)
+            .shadow(radius: 6, y:5)
         }
-        .padding()
-        .background(
-            Color.white
-                .clipShape(TabCurve(tabPoint: CGFloat(vr.getCurvePoint()) - 15))
-        )
-        .overlay(
-            Circle()
-                .fill(Color.theme.secondary)
-                .frame(width: 10, height: 10)
-                .offset(x: CGFloat(vr.getCurvePoint()) - 20)
-            ,alignment: .bottomLeading
-        )
-        .cornerRadius(30)
-        .padding(.horizontal)
-        .shadow(radius: 5, y:3)
+        .padding(.bottom, 20)
+        .ignoresSafeArea()
         
     }
 }
@@ -57,9 +64,9 @@ struct TabBarButton: View {
                         vr.selectedTab = image
                     }
                 }, label: {
-                    Image(systemName: "\(image)\(vr.selectedTab == image ? ".fill" : "")")
-                        .font(.system(size: 25, weight: .semibold))
-                        .foregroundColor(vr.selectedTab == image ? Color.theme.secondary : Color(red: 200/255, green: 210/255, blue: 210/255))
+                    Image(systemName: "\(image)\(vr.selectedTab == image ? ".fill" : ".fill")")
+                        .font(.system(size: 26, weight: .black))
+                        .foregroundColor(vr.selectedTab == image ? Color.theme.accent : Color.black)
                         .offset(y: vr.selectedTab == image ? -10 : 0)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                 })

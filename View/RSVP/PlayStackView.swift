@@ -21,13 +21,9 @@ struct PlayStackView: View {
                     
                     print("\(rsvpVM.showSpeedPopOver)")
                 }, label: {
-                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accent]), startPoint: .top, endPoint: .bottom)
-                        .mask(
-                            Image(systemName:"speedometer")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        )
-                        .frame(width: 30, height: 30)
+                    Image(systemName:"speedometer")
+                        .font(.system(size: 38).weight(.medium))
+                        .foregroundColor(.black)
                 })
                     .padding(.trailing, 10)
             }
@@ -36,47 +32,41 @@ struct PlayStackView: View {
             
             HStack {
                 // Go Backward
-                Button(action: {
-                }, label: {
-                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accent]), startPoint: .top, endPoint: .bottom)
-                        .mask(
-                            Image(systemName: "gobackward.30")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        )
-                        .frame(width: 30, height: 30)
-                })
+//                Button(action: rsvpVM.rewind, label: {
+//                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accentGradient]), startPoint: .top, endPoint: .bottom)
+//                        .mask(
+//                            Image(systemName: "gobackward.30")
+//                                .resizable()
+//                                .frame(width: 30, height: 30)
+//                        )
+//                        .frame(width: 30, height: 30)
+//                })
                 // Play/Pause
                 Button(action: {
-                    withAnimation{
-                        rsvpVM.toggleIsPlaying()
+                    DispatchQueue.main.async {
+                        withAnimation{
+                            rsvpVM.toggleIsPlaying()
+                        }
                     }
                 }, label: {
-                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accent]), startPoint: .top, endPoint: .trailing)
-                        .mask(
-                            Image(systemName: rsvpVM.isPlaying ? "pause.circle.fill" :"play.circle.fill")
-                                .resizable()
-                                .frame(width: 70, height: 70)
-                        )
-                        .background(Color.white)
-                        .clipShape(Circle())
+                    Image(systemName: rsvpVM.isPlaying ? "pause.fill" :"play.fill")
+                        .font(.system(size: 40).weight(.bold))
+                        .foregroundColor(.black)
                 })
                 .frame(width: 70, height: 70)
                 .padding(.horizontal,40)
                 
                 // Go Forward
-                Button(action: {
-                    //rsvpVM.toggleIsPlaying()
-                }, label: {
-                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accent]), startPoint: .top, endPoint: .bottom)
-                        .mask(
-                            Image(systemName: "goforward.30")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        )
-                        .frame(width: 30, height: 30)
-                        
-                })
+//                Button(action: rsvpVM.fastForward, label: {
+//                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accentGradient]), startPoint: .top, endPoint: .bottom)
+//                        .mask(
+//                            Image(systemName: "goforward.30")
+//                                .resizable()
+//                                .frame(width: 30, height: 30)
+//                        )
+//                        .frame(width: 30, height: 30)
+//
+//                })
             } //: HSTACK
             .foregroundColor(Color.theme.accent)
             
@@ -88,6 +78,6 @@ struct PlayStackView: View {
 
 struct PlayStackView_Previews: PreviewProvider {
     static var previews: some View {
-        RSVPView(vm: RSVPViewModel(text:["s"]))
+        RSVPView(vm: RSVPViewModel())
     }
 }
