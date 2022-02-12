@@ -8,36 +8,23 @@
 import Foundation
 import CoreData
 
-//class MyBooksViewModel: ObservableObject {
-//    let container: NSPersistentContainer
-//    @Published var downloadedBooks: [BookEntity] = []
-//    
-//    init() {
-//        container = NSPersistentContainer(name: "Speedreader")
-//        container.loadPersistentStores { (description, error) in
-//            if let error = error {
-//                print("Error loading data. \(error)")
-//            } else {
-//                print("Successfully loaded data")
-//            }
-//        }
-//        fetchBooks()
-//    }
-//
-//    func fetchBooks(){
-//        let req = NSFetchRequest<BookEntity>(entityName: "BookEntity")
-//        do {
-//            downloadedBooks = try container.viewContext.fetch(req)
-//        } catch let error {
-//            print(error)
-//        }
-//    }
-//
-//    func saveData() {
-//        do{
-//            try container.viewContext.save()
-//        } catch let error {
-//            print(error)
-//        }
-//    }
-//}
+class MyBooksViewModel: ObservableObject {
+    let coreDataManager: CoreDataManager = CoreDataManager.shared
+    @Published var books: [DownloadedBook] = []
+    
+    init(){
+        self.books = coreDataManager.getBooks()
+    }
+    func setActiveBook(book: DownloadedBook){
+        coreDataManager.setActiveBook(book: book)
+    }
+    
+    func delete(entity: DownloadedBook){
+        coreDataManager.delete(entity: entity)
+    }
+    
+    func getActiveBook() -> DownloadedBook?{
+        return coreDataManager.getActiveBook()
+    }
+    
+}

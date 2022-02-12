@@ -95,6 +95,6 @@ struct SpeedPopOverView: View {
 
 struct SpeedPopOverView_Previews: PreviewProvider {
     static var previews: some View {
-        RSVPView(vm: RSVPViewModel(text:["s"]))
+        RSVPView(vm: RSVPViewModel())
     }
 }

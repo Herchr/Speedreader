@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BookViewBody: View {
-    @Binding var book: Book
+    @EnvironmentObject var libraryVM: LibraryViewModel
     var rectangleSize: [CGFloat]
     
     var body: some View {
@@ -25,7 +25,7 @@ struct BookViewBody: View {
             .padding([.leading, .top], 30)
             
             ScrollView {
-                Text("\(book.about)")
+                Text("\(libraryVM.selectedBook.about)")
                     .foregroundColor(Color.theme.text)
                 .padding(30)
             }
@@ -33,8 +33,8 @@ struct BookViewBody: View {
     }
 }
 
-//struct BookViewBody_Previews: PreviewProvider {
-//    static var previews: some View {
-//        BookView(book: BookViewModel(book: Constants.books[0]))
-//    }
-//}
+struct BookViewBody_Previews: PreviewProvider {
+    static var previews: some View {
+        LibraryView(libraryVM: LibraryViewModel())
+    }
+}

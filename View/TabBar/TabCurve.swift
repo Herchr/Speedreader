@@ -40,8 +40,8 @@ struct TabCurve: Shape {
     }
 }
 
-struct TabCurve_Previews: PreviewProvider {
-    static var previews: some View{
-        ContentView()
-    }
-}
+//struct TabCurve_Previews: PreviewProvider {
+//    static var previews: some View{
+//        ContentView()
+//    }
+//}

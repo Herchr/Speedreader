@@ -8,22 +8,21 @@
 import SwiftUI
 
 struct BookViewBackButton: View {
-    @Binding var showBookView: Bool
+    @EnvironmentObject var libraryVM: LibraryViewModel
+    
     var body: some View {
         HStack{
             Button(action: {
                 withAnimation{
-                    showBookView.toggle()
+                    libraryVM.showBookView = false
                 }
-                print("pressed")
             }, label: {
                 Image(systemName: "chevron.left")
                     .resizable()
-                    .frame(width: 10, height: 20, alignment: .center)
+                    .frame(width: 12, height: 20)
                     .foregroundColor(.white)
             })
-                .padding()
-                .padding(.top, 15)
+                .padding(15)
             Spacer()
         }
     }
@@ -31,6 +30,6 @@ struct BookViewBackButton: View {
 
 struct BookViewBackButton_Previews: PreviewProvider {
     static var previews: some View {
-        BookViewBackButton(showBookView: Binding.constant(true))
+        BookViewBackButton()
     }
 }

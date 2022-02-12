@@ -8,15 +8,15 @@
 import Foundation
 
 class ViewRouter: ObservableObject{
-    let tabImages: [String] = ["bolt", "house", "books.vertical", "person.circle"]
+    let tabImages: [String] = ["bolt", "map", "bookmark", "person"]
     var counter: Int = 0
     @Published var tabMidPoints: [Double] = []
-    @Published var selectedTab: String = "bolt"
+    @Published var selectedTab: String = "bookmark"
     
     func setTabMidPoint(midPoint: Double) {
         if counter >= tabImages.count && tabMidPoints.count<4{
             tabMidPoints.append(midPoint)
-            print(counter, midPoint, tabMidPoints.count)
+            //print(counter, midPoint, tabMidPoints.count)
         }
         counter += 1
     }
