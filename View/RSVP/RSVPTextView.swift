@@ -61,12 +61,20 @@ struct RSVPTextView: View {
 //        .background(Color("kMainBg"))
 //        .edgesIgnoringSafeArea(.all)
         
-        ZStack {
-            HStack {
-                Text(rsvpVM.rsvpText)
-                    .font(.title)
-                    .foregroundColor(Color.theme.text)
-            } //: HStack
+        VStack{
+            ZStack {
+                HStack {
+                    Text(rsvpVM.rsvpText)
+                        .font(.title)
+                        .foregroundColor(Color.black)
+                } //: HStack
+            }
+//            Button("start"){
+//                rsvpVM.start()
+//            }
+//            Button("stop"){
+//                rsvpVM.stop()
+//            }
         }
     }
 }

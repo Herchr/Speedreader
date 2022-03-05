@@ -9,7 +9,7 @@ import Foundation
 
 class QuestionnaireViewModel: ObservableObject{
     @Published var currentQuestion: Question?
-    var questions: [Question] = Constants.questions // Fetch fra CloudKit
+    @Published var questions: [Question] = Constants.honeyBadgerQuestions
     var correctAnswers: Int = 0
     var wrongAnswers: Int = 0
     

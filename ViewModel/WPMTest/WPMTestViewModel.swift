@@ -10,10 +10,13 @@ import SwiftUI
 import CloudKit
 
 class WPMTestViewModel: ObservableObject {
+    @ObservedObject var firestoreManager = FirestoreManager()
     @Published var startReading: Bool = false
     @Published var wpm: Int = 0
+    @Published var wpmText: String = Constants.honeyBadgerText
     var secondsElapsed: Int = 0
     var timer: Timer?
+    
     
     
     @objc func startTimer(){
@@ -28,10 +31,10 @@ class WPMTestViewModel: ObservableObject {
     }
     
     func calculateWPM() -> Int{
-        let totalWords = Constants.wpmTestText.components(separatedBy: .whitespacesAndNewlines).count
-        let minutesElapsed: Double = Double(secondsElapsed) / 60.0
-        self.wpm = (Double(totalWords) / minutesElapsed).toInt() ?? 0
-        return self.wpm
+        let totalWords = self.wpmText.components(separatedBy: .whitespacesAndNewlines).count
+            let minutesElapsed: Double = Double(secondsElapsed) / 60.0
+            self.wpm = (Double(totalWords) / minutesElapsed).toInt() ?? 0
+            return self.wpm
     }
     
     func uploadWPM(){

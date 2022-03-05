@@ -10,7 +10,7 @@ struct ContinuePopUpView: View {
     @ObservedObject var guidedVM: GuidedViewModel
     @ObservedObject var rsvpVM: RSVPViewModel
     @ObservedObject var kineticVM: KineticViewModel
-    @EnvironmentObject var globalVM: GlobalViewModel
+    @EnvironmentObject var globalVM: AppViewModel
     
     
 //    func delay( seconds: Double, content: @escaping () -> Void){
@@ -25,15 +25,21 @@ struct ContinuePopUpView: View {
         }
         
         if guidedVM.sessionType == SessionType.RSVP{
-            rsvpVM.wpm += guidedVM.initialSpeed*0.333
-            DispatchQueue.main.async {
-                rsvpVM.toggleIsPlaying()
+            if rsvpVM.wpm + guidedVM.initialSpeed*0.333 > 500{
+                rsvpVM.wpm = 500
+            }else{
+                rsvpVM.wpm += guidedVM.initialSpeed*0.333
             }
+            
+            
+            rsvpVM.start()
+            
             delay(seconds: guidedVM.timeInterval){
                 if !guidedVM.started{
                     return
                 }
-                rsvpVM.toggleIsPlaying()
+                rsvpVM.stop()
+                
                 
                 // RSVP SESSION FINISHED
                 if guidedVM.currentRound >= guidedVM.totalRounds{
@@ -58,10 +64,14 @@ struct ContinuePopUpView: View {
                 }
             }
         }else{
-            kineticVM.wpm += guidedVM.initialSpeed*0.333
-            DispatchQueue.main.async {
-                kineticVM.toggleIsPlaying()
+            if kineticVM.wpm + guidedVM.initialSpeed*0.333 > 500{
+                kineticVM.wpm = 500
+            }else{
+                kineticVM.wpm += guidedVM.initialSpeed*0.333
             }
+            
+            kineticVM.toggleIsPlaying()
+            
             delay(seconds: guidedVM.timeInterval){
                 if !guidedVM.started{
                     return
@@ -133,19 +143,20 @@ struct ContinuePopUpView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .padding(.vertical, 15)
-                        .padding(.horizontal, UIScreen.main.bounds.width / 2.95)
-                        .background(Color.theme.primary)
-                        .foregroundColor(Color.theme.accent)
+                        .padding(.horizontal, screen.width / 2.95)
+                        .background(Color.theme.accent)
+                        .foregroundColor(Color.white)
                         //.cornerRadius(44)
                         .clipShape(Capsule())
                 })
                 .padding(.bottom)
             } //:VSTACK
             
-            .background(Color.theme.background)
+            .background(.regularMaterial)
             .cornerRadius(44, corners: [.topLeft, .topRight])
             .shadow(radius: 5)
         }
+//        .background(RoundedRectangle(cornerRadius: 20).fill(Color.green))
         .edgesIgnoringSafeArea(.bottom)
     }
 }

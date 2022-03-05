@@ -9,28 +9,47 @@ import Foundation
 import Firebase
 import FirebaseFirestore
 
+enum DatabaseError: Error {
+    case failed
+}
+
 class FirestoreManager: ObservableObject{
     let db = Firestore.firestore()
-    var currentUser = Auth.auth().currentUser
+    
+    @Published var wpm: Double = 0
     
     // MARK: - WPM TEST + QUESTIONNAIRE
     func setWPMBefore(wpmBefore: Double){
-        if let currentUser = currentUser{
+        if let currentUser = Auth.auth().currentUser{
             let docRef = db.collection("UserData").document(currentUser.uid)
-            docRef.setData(["WPMBefore": wpmBefore], merge: true){ error in
+            docRef.setData(["WPMBefore": wpmBefore > 400 ? 400 : wpmBefore], merge: true){ error in
                 guard error == nil else{
-                    print("\(String(describing: error))")
+                    print("error wpmbefore \(String(describing: error))")
                     return
                 }
                 print("WPMBefore successfully set")
             }
         }
-        
-        
+    }
+    
+    func getWPMBefore() async -> Double?{
+        if let currentUser = Auth.auth().currentUser{
+            do{
+                let doc = try await db.collection("UserData").document(currentUser.uid).getDocument().data()
+                guard let userData = doc else{
+                    print("error fetching wpmbefore")
+                    return nil
+                }
+                return userData["WPMBefore"] as? Double
+            }catch{
+                print("error error fetching wpmbefore")
+            }
+        }
+        return nil
     }
     
     func setWPMAfter(wpmAfter: Double){
-        if let currentUser = currentUser{
+        if let currentUser = Auth.auth().currentUser{
             let docRef = db.collection("UserData").document(currentUser.uid)
             docRef.setData(["WPMAfter": wpmAfter], merge: true){ error in
                 guard error == nil else{
@@ -41,9 +60,9 @@ class FirestoreManager: ObservableObject{
             }
         }
     }
-    
+
     func setComprehensionBefore(comprehensionBefore: Double){
-        if let currentUser = currentUser{
+        if let currentUser = Auth.auth().currentUser{
             let docRef = db.collection("UserData").document(currentUser.uid)
             docRef.setData(["ComprehensionBefore": comprehensionBefore], merge: true){ error in
                 guard error == nil else{
@@ -56,9 +75,22 @@ class FirestoreManager: ObservableObject{
     }
     
     func setComprehensionAfter(comprehensionAfter: Double){
-        if let currentUser = currentUser{
+        if let currentUser = Auth.auth().currentUser{
             let docRef = db.collection("UserData").document(currentUser.uid)
             docRef.setData(["ComprehensionAfter": comprehensionAfter], merge: true){ error in
+                guard error == nil else{
+                    print("\(String(describing: error))")
+                    return
+                }
+                print("ComprehensionAfter successfully set")
+            }
+        }
+    }
+    
+    func setTechnique(technique: String){
+        if let currentUser = Auth.auth().currentUser{
+            let docRef = db.collection("UserData").document(currentUser.uid)
+            docRef.setData(["Technique": technique], merge: true){ error in
                 guard error == nil else{
                     print("\(String(describing: error))")
                     return

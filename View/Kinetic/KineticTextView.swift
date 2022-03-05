@@ -1,60 +1,81 @@
-////
-////  KineticTextView.swift
-////  Speedreader
-////
-////  Created by Herman Christiansen on 14/10/2021.
-////
 //
-//import SwiftUI
+//  KineticTextView.swift
+//  Speedreader
 //
-//struct KineticTextView: View {
-//    @ObservedObject var kineticVM: KineticViewModel
+//  Created by Herman Christiansen on 14/10/2021.
 //
-//    var body: some View {
-//        GeometryReader { geometry in
-//            VStack {
-//                VStack(alignment: .leading, spacing: 10) {
-//                    ForEach(Array(zip(kineticVM.kineticText.indices, kineticVM.kineticText)), id: \.1){ index, text in
-//                        VStack(alignment: .leading, spacing: 0) {
-//                            ZStack(alignment: .bottomLeading) {
-//                                    Text("\(text)")
-//                                        .background(GeometryReader{ geo in
-//                                            Color.clear
-//                                                .onAppear{
-//                                                    kineticVM.widths[index] = (geo.size.width)
-//                                                }
-//                                        })
+
+import SwiftUI
+
+struct KineticTextView: View {
+    @ObservedObject var kineticVM: KineticViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            if let kineticText = kineticVM.kineticText{
+                ForEach(Array(zip(kineticText.indices, kineticText)), id: \.0){ i, sentenceArray in
+                    ZStack {
+                        HStack(spacing: 0) {
+                            ForEach(Array(zip(sentenceArray.indices, sentenceArray)), id: \.0){ j, w in
+                                Text("\(w) ")
+                                    .foregroundColor(Color.theme.text)
+                            }
+                        }
+                        //.border(Color.black)
+                        .background(
+                            GeometryReader{ geo -> Color in
+                                DispatchQueue.main.async {
+                                    kineticVM.lineWidths[Int(i)] = geo.size.width
+                                }
+                                return Color.clear
+                            }
+                        )
+//                        .background(
+//                            VStack(alignment: .leading) {
+//                                Spacer()
+//                                HStack{
+//                                    Spacer()
+//                                    RoundedRectangle(cornerRadius: -12)
+//                                        .fill(Color.white)
+//                                        .frame(width: 100)
+//                                        .offset(x: 100, y: 4)
 //
-//                                Capsule()
-//                                    .opacity(index == kineticVM.currLine ? 1 : 0)
-//                                    .frame(width: (kineticVM.isPlaying) ? kineticVM.widths[index] : 0, height: 5)
-//                                    .offset(y: 3)
-//                                Capsule()
-//                                    .frame(width: (kineticVM.isPlaying && (index == kineticVM.currLine)) ? kineticVM.widths[index] : 0, height: 5)
-//                                    .animation( (kineticVM.isPlaying) ?
-//                                                Animation.linear(duration: kineticVM.currInterval).repeatForever(autoreverses: false) : Animation.default
-//                                )
-//                                    .opacity(index == kineticVM.currLine ? 1 : 0)
-//                                    .foregroundColor(.white)
-//                                    .offset(y: 3)
+//                                }
 //                            }
-//                        }
-//                    }
-//                }
-//                .frame(width: geometry.size.width)
-//                .padding()
-//                .font(.callout)
-//                Button(action: {
-//                    kineticVM.toggleIsPlaying()
-//                }, label: {Text("togg")})
+//                        )
+                        .background(
+                            VStack(alignment: .leading) {
+                                Spacer()
+                                HStack {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(kineticVM.currentLine == i ? .black : .clear)
+                                        .frame(width: 60, height: 5)
+                                        //.scaleEffect(x: kineticVM.pointerScale, anchor: .bottomTrailing)
+                                        .foregroundColor(Color.theme.text)
+                                        .offset(x: kineticVM.pointerOffset)
+                                        //.opacity(kineticVM.currentLine == i ? 1 : 0)
+                                        .opacity(kineticVM.finishingLineOpacity)
+                                    Spacer()
+                                }
+                                
+                            }
+                            .offset(y: 3)
+                            
+                        )
+                        
+                    }
+                }
+            }
+//            Button("gønn på"){
+//                kineticVM.toggleIsPlaying()
 //            }
-//            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .center)
-//        }
-//    }
-//}
-//
-//struct KineticTextView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        KineticTextView(kineticVM: KineticViewModel(text: Constants.dummyText.components(separatedBy: " ")))
-//    }
-//}
+            
+        }
+    }
+}
+
+struct KineticTextView_Previews: PreviewProvider {
+    static var previews: some View {
+        KineticTextView(kineticVM: KineticViewModel())
+    }
+}

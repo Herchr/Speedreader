@@ -11,8 +11,10 @@ struct GuidedView: View {
     @ObservedObject var rsvpVM: RSVPViewModel
     @ObservedObject var kineticVM: KineticViewModel
     @StateObject var guidedVM: GuidedViewModel = GuidedViewModel()
-    @EnvironmentObject var globalVM: GlobalViewModel
+    @EnvironmentObject var globalVM: AppViewModel
+    var firestoreManager: FirestoreManager = FirestoreManager()
     
+    @State var inFocus: Bool = false
     
     func startGuided(sessionType: SessionType){
         guidedVM.sessionType = sessionType
@@ -21,27 +23,33 @@ struct GuidedView: View {
             globalVM.showTabBar = false
         }
         if sessionType == SessionType.RSVP{
-            guidedVM.initialSpeed = rsvpVM.wpm
-            rsvpVM.toggleIsPlaying()
+            //guidedVM.initialSpeed = rsvpVM.wpm // ENDRE DENNE TIL FETCH FRA FIREBASE
+            rsvpVM.start()
             // TRIGGER FIRST CONTINUE POPUP
             delay(seconds: guidedVM.timeInterval){
-                rsvpVM.toggleIsPlaying()
+                rsvpVM.stop()
+//                DispatchQueue.main.async {
+//                    rsvpVM.stopTimer()
+//                }
                 withAnimation(.spring()){
                     guidedVM.showContinuePopUp = true
                 }
             }
         }else{
-            DispatchQueue.main.async {
+            //guidedVM.initialSpeed = kineticVM.wpm
+            delay(seconds: 1){
                 kineticVM.toggleIsPlaying()
-            }
-            
-            // TRIGGER FIRST CONTINUE POPUP
-            delay(seconds: guidedVM.timeInterval){
-                if guidedVM.started{
-                    kineticVM.toggleIsPlaying()
-                    delay(seconds: guidedVM.popUpPause){
-                        withAnimation(.spring()){
-                            guidedVM.showContinuePopUp = true
+                
+                // TRIGGER FIRST CONTINUE POPUP
+                delay(seconds: guidedVM.timeInterval){
+                    if guidedVM.started{
+                        DispatchQueue.main.async {
+                            kineticVM.toggleIsPlaying()
+                        }
+                        delay(seconds: guidedVM.popUpPause){
+                            withAnimation(.spring()){
+                                guidedVM.showContinuePopUp = true
+                            }
                         }
                     }
                 }
@@ -51,6 +59,7 @@ struct GuidedView: View {
 
     var body: some View {
         ZStack {
+            //Text("\(kineticVM.wpm)")
             if guidedVM.started{
                 VStack{
                     //CLOSE BUTTON
@@ -58,9 +67,9 @@ struct GuidedView: View {
                         Button(action: {
                             guidedVM.endPrematurely()
                             if guidedVM.sessionType == SessionType.RSVP{
-                                rsvpVM.stopTimer()
+                                rsvpVM.stop()
                             }else{
-                                kineticVM.stopTimer()
+                                kineticVM.toggleIsPlaying()
                             }
                             delay(seconds: 0.2){
                                 withAnimation(.spring()){
@@ -70,8 +79,8 @@ struct GuidedView: View {
                         }, label: {
                             Image(systemName: "xmark")
                                 .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.black.opacity(0.75))
+                                .frame(width: 16, height: 16)
+                                .foregroundColor(Color.theme.text)
                         })
                         Spacer()
                     }
@@ -80,7 +89,8 @@ struct GuidedView: View {
                     if guidedVM.sessionType == SessionType.RSVP{
                         RSVPTextView(rsvpVM: rsvpVM)
                     }else{
-                        KineticTest(kineticVM: kineticVM)
+                        KineticTextView(kineticVM: kineticVM)
+                        
                     }
                     Spacer()
                 }
@@ -88,6 +98,7 @@ struct GuidedView: View {
             }else{
                 if guidedVM.showCompleteScreen{
                     CompletedView()
+                        .ignoresSafeArea()
                         .transition(.move(edge: .bottom))
                 }else{
                     VStack {
@@ -98,11 +109,12 @@ struct GuidedView: View {
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .multilineTextAlignment(.center)
-                                .frame(width: UIScreen.main.bounds.width / 1.4)
+                                .frame(width: screen.width / 1.4)
 
                             HStack {
                                 Button(action: {
                                     startGuided(sessionType: SessionType.KINETIC)
+                                    firestoreManager.setTechnique(technique: "Kinetic")
                                 }, label: {
                                     Text("Kinetic")
                                         .font(Font.title3.bold())
@@ -116,6 +128,7 @@ struct GuidedView: View {
 
                                 Button(action: {
                                     startGuided(sessionType: SessionType.RSVP)
+                                    firestoreManager.setTechnique(technique: "RSVP")
                                 }, label: {
                                     Text("RSVP")
                                         .font(Font.title3.bold())
@@ -142,21 +155,29 @@ struct GuidedView: View {
                     .transition(.move(edge: .bottom))
             }
         } //: ZSTACK
-        .tabBarPadding(started: guidedVM.started)
+        //.tabBarPadding(started: guidedVM.started)
         .background(
-            Image("GuidedBG3")
-                .resizable()
-                .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                .ignoresSafeArea()
+            ZStack{
+                if !guidedVM.started{
+                    Image("GuidedBG2")
+                        .resizable()
+                        .frame(width: screen.width, height: screen.height)
+                        .ignoresSafeArea()
+                }
+            }
+            
         )
-        
-        
+        .task{
+            let wpm = await (firestoreManager.getWPMBefore() ?? 0)
+            guidedVM.initialSpeed = wpm
+            rsvpVM.wpm = wpm
+            kineticVM.wpm = wpm
+        }
     }
 }
 
 struct GuidedView_Previews: PreviewProvider {
     static var previews: some View {
-//        GuidedView(rsvpVM: RSVPViewModel(), kineticVM: KineticViewModel(), guidedVM: GuidedViewModel()).environmentObject(GlobalViewModel())
-        ContentView()
+        GuidedView(rsvpVM: RSVPViewModel(), kineticVM: KineticViewModel(), guidedVM: GuidedViewModel()).environmentObject(AppViewModel())
     }
 }

@@ -21,14 +21,14 @@ class GuidedViewModel: ObservableObject{
     @Published var started: Bool = false
     @Published var currentRound = 0
     
-    var initialSpeed: Double = 200.0
+    var initialSpeed: Double = 200
     var totalRounds: Int = 3
     
-    var timeInterval: Double = 5.0
-    var popUpPause: Double = 0.5
+    var timeInterval: Double = 60.0
+    var popUpPause: Double = 1 // Change so its prop to wpm
     
     let increase: [String] = ["33", "66", "100"]
-    
+
     func getWpmIncrease(currentRound: Int) -> String{
         if currentRound >= 0 && currentRound < self.totalRounds{
             return increase[currentRound]
@@ -36,7 +36,9 @@ class GuidedViewModel: ObservableObject{
         return ""
     }
     func start(){
-        started = true
+        withAnimation{
+            started = true
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + self.timeInterval){
             self.showContinuePopUp = true
         }

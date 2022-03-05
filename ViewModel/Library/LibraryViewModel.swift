@@ -14,11 +14,14 @@ import Combine
 class LibraryViewModel: ObservableObject {
     
     // MARK: - BOOKLISTVIEW
-    @Published var books: [Book] = []
+    @Published var books: [Book] = bookExamples
+    
+    // MARK: - FEATURED BOOKLIST
+    //@Published var featuredBooks: [Book] = bookExamples
     
     // MARK: - BOOKVIEW
     @Published var showBookView: Bool = false
-    @Published var selectedBook: Book = bookExamples[0]
+    @Published var selectedBook: Book = bookExamples[4]
     // MARK: - SEARCHBAR
     @Published var searchText: String = ""
     @Published var searchActivated: Bool = false
@@ -26,6 +29,7 @@ class LibraryViewModel: ObservableObject {
     
     // MARK: - CATEGORIES
     @Published var filteredBooks: [Book]? = bookExamples
+    @Published var showCategoryBookListView: Bool = false
     @Published var selectedCategory: Category = categories.first!
     
     var searchCancellable: AnyCancellable?
@@ -34,7 +38,7 @@ class LibraryViewModel: ObservableObject {
 //        if self.books.isEmpty{
 //            self.fetchBooks()
 //        }
-//        
+//
 //        searchCancellable = $searchText.removeDuplicates()
 //            .debounce(for: 0.5, scheduler: RunLoop.main)
 //            .sink(receiveValue: { str in
@@ -48,7 +52,7 @@ class LibraryViewModel: ObservableObject {
 //        selectCategoryCancellable = $selectedCategory
 //            .debounce(for: 0.1, scheduler: RunLoop.main)
 //            .sink(receiveValue: { _ in
-//                
+//
 //                self.filterBooksByCategory()
 //        })
 //    }
@@ -66,7 +70,9 @@ class LibraryViewModel: ObservableObject {
         }
         book.img = UIImage(data: (imgURL))
         book.title = record["title"] as! String
-        //book.text = record["text"] as! String
+        if let text = record["text"]{
+            book.text = text as! String
+        }
         
         if let categories = (record["categories"] as? [String]){
             for cat in categories{
@@ -81,7 +87,7 @@ class LibraryViewModel: ObservableObject {
         let query = CKQuery(recordType: "Book", predicate: pred)
         let operation = CKQueryOperation(query: query)
         
-        operation.desiredKeys = ["author", "about", "img", "title", "categories"]
+        operation.desiredKeys = ["author", "about", "img", "title", "text", "categories"]
         
         var fetchedBooks: [Book] = [Book]()
         
@@ -89,7 +95,12 @@ class LibraryViewModel: ObservableObject {
             switch returnedResult{
             case .success(let record):
                 let book = self.parseRecord(record: record)
-                fetchedBooks.append(book)
+                if ["The Adventures of Sherlock Holmes", "The Scarlet Letter", "The Adventures of Huckleberry Finn"].contains(book.title){
+                    fetchedBooks.insert(book, at: 0)
+                }else{
+                    fetchedBooks.append(book) // CHANGE TO JUST THIS LINE. THE ABOVE IF IS FOR DESIGN PURPOSES
+                }
+                
             case .failure(let error):
                 print("\(error)")
             }
@@ -98,7 +109,6 @@ class LibraryViewModel: ObservableObject {
         operation.queryResultBlock = { [weak self] returnedResult in
             DispatchQueue.main.async {
                 self?.books = fetchedBooks
-                self?.filteredBooks = fetchedBooks
             }
         }
         

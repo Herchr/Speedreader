@@ -10,9 +10,8 @@ import SwiftUI
 struct Questionnaire: View {
     @StateObject var questionnaireVM: QuestionnaireViewModel = QuestionnaireViewModel()
     
-    var setActiveItem: (ActiveFullScreenCover?) -> Void = { _ in }
-    
     var initialTest: Bool = true
+    @Binding var isActive: Bool
     
     var body: some View {
         VStack {
@@ -20,10 +19,10 @@ struct Questionnaire: View {
             Spacer()
             ScrollViewReader{ proxy in
                 ScrollView(.horizontal, showsIndicators: false){
-                        HStack(spacing: -60){
-                            ForEach(Constants.questions){ question in
-                                QuestionView(question: question, setActiveItem: setActiveItem, initialTest: initialTest)
-                                    .frame(width: UIScreen.main.bounds.width)
+                        HStack(spacing: 0){
+                            ForEach(questionnaireVM.questions){ question in
+                                QuestionView(question: question, initialTest: initialTest, isActive: $isActive)
+                                    .frame(width: screen.width)
                                     .id(question)
                                 
                             }.onChange(of: questionnaireVM.currentQuestion){ question in
@@ -37,14 +36,21 @@ struct Questionnaire: View {
             } //: SCROLLVIEWREADER
             .padding(.bottom)
         } //: VSTACK
-        .background(Color.theme.primary)
+        .background(LinearGradient(colors: [Color.theme.accent, Color.theme.pinkGradient], startPoint: .topLeading, endPoint: .bottomTrailing))
         .environmentObject(questionnaireVM)
+        .onAppear{
+            if initialTest{
+                questionnaireVM.questions = Constants.honeyBadgerQuestions
+            }else{
+                questionnaireVM.questions = Constants.dodoQuestions
+            }
+        }
         
     }
 }
 
-//struct Questionnaire_Previews: PreviewProvider {
-//    static var previews: some View {
-//        Questionnaire(showWPMTest: Binding.constant(true))
-//    }
-//}
+struct Questionnaire_Previews: PreviewProvider {
+    static var previews: some View {
+        Questionnaire(initialTest: false, isActive: Binding.constant(true))
+    }
+}

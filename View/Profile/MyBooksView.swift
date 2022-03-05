@@ -21,7 +21,7 @@ struct MyBooksView: View {
                     if let img = book.img{
                         Image(data: img, placeholder: "Beowulf")
                             .resizable()
-                            .cornerRadius(8)
+                            .cornerRadius(6)
                             .frame(width: 130, height: 177, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                             .onTapGesture{
                                 showActionSheet.toggle()

@@ -11,6 +11,8 @@ struct CoreDataManager {
     static let shared = CoreDataManager()
     let container: NSPersistentContainer
     private let entityName: String = "DownloadedBook"
+    
+    
 //    static var preview: PersistenceController = {
 //        let result = PersistenceController(inMemory: true)
 //        let viewContext = result.container.viewContext
@@ -98,7 +100,9 @@ struct CoreDataManager {
         entity.title = book.title
         entity.about = book.about
         entity.author = book.author
-        entity.text = book.text
+        //entity.text = book.text
+        let cleanedBook = book.text.replacingOccurrences(of: "\n", with: " ")
+        entity.text = cleanedBook  //ENDRE TILBAKE NÅR ENTITY.TEXT ER ENDRET TIL BINARY DATA
         entity.id = UUID()
         entity.currentIndex = 0
         entity.isActive = false

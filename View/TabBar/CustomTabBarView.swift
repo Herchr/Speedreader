@@ -18,7 +18,7 @@ struct CustomTabBarView: View {
                     TabBarButton(image: tabImage, vr: vr)
                 }
             }
-            .padding(22)
+            .padding(18)
             .background(
                 Color.white
                     .clipShape(TabCurve(tabPoint: CGFloat(vr.getCurvePoint()) - 15))
@@ -34,9 +34,9 @@ struct CustomTabBarView: View {
                 RoundedRectangle(cornerRadius: 30, style: .continuous)
             )
             .padding(.horizontal)
-            .shadow(radius: 6, y:5)
+            .shadow(radius: 3, y:3)
         }
-        .padding(.bottom, 20)
+        .padding(.bottom, screen.height*0.02)
         .ignoresSafeArea()
         
     }

@@ -23,6 +23,7 @@ struct ColorTheme {
     let accentGradient = Color("AccentGradientColor")
     let text = Color("TextColor")
     let redGradient1 = Color("RedGradient1")
+    let pinkGradient = Color("PinkGradient")
     
 }
 

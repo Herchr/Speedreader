@@ -86,7 +86,8 @@ struct SearchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity,alignment: .top)
         .background(
             Color.white
-                .ignoresSafeArea()
+                //.opacity(0.1)
+               // .ignoresSafeArea()
         )
     }
 }
