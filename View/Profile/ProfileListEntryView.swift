@@ -21,8 +21,12 @@ struct ProfileListEntryView: View {
                     .font(.title3)
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     //.opacity(/*@START_MENU_TOKEN@*/0.8/*@END_MENU_TOKEN@*/)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(Font.caption.bold())
             } //:HSTACK
-            .padding(.vertical)
+            .padding([.vertical, .leading, .trailing])
+            .padding(.vertical, 5)
         }
     }
 }

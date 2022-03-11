@@ -6,11 +6,17 @@
 //
 
 import CoreData
+import Firebase
+import FirebaseStorage
 
 struct CoreDataManager {
     static let shared = CoreDataManager()
     let container: NSPersistentContainer
     private let entityName: String = "DownloadedBook"
+    
+    let storage = Storage.storage()
+    
+    
 //    static var preview: PersistenceController = {
 //        let result = PersistenceController(inMemory: true)
 //        let viewContext = result.container.viewContext
@@ -98,11 +104,30 @@ struct CoreDataManager {
         entity.title = book.title
         entity.about = book.about
         entity.author = book.author
-        entity.text = book.text
+        //entity.text = book.text
+        let cleanedBook = book.text.replacingOccurrences(of: "\n", with: " ")
+        entity.text = cleanedBook  //ENDRE TILBAKE NÅR ENTITY.TEXT ER ENDRET TIL BINARY DATA
         entity.id = UUID()
         entity.currentIndex = 0
         entity.isActive = false
-        save()
+        
+        let storageRef = storage.reference()
+        let textRef = storageRef.child("texts/\(book.title).txt")
+        textRef.getData(maxSize: 15728640){ (data, error) in
+            if let error = error {
+               print("error", error)
+            }
+
+            let text = String(data: data!, encoding: String.Encoding.utf8)
+            entity.text = text
+            save()
+            
+            if self.getActiveBook() == nil{
+                self.setActiveBook(book: entity)
+            }
+        }
+        
+        
     }
     
 //    func add(book: Book){

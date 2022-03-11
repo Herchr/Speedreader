@@ -12,6 +12,22 @@ extension Color {
     
     static let theme = ColorTheme()
     
+    static func random() -> Color {
+        return Color(red: Double.random(in: 0...1), green: Double.random(in: 0...1), blue: Double.random(in: 0...1))
+    }
+    
+    
+}
+
+extension UIColor {
+    static var random: UIColor {
+        return UIColor(
+            red: .random(in: 0...1),
+            green: .random(in: 0...1),
+            blue: .random(in: 0...1),
+            alpha: 1.0
+        )
+    }
 }
 
 struct ColorTheme {
@@ -23,6 +39,7 @@ struct ColorTheme {
     let accentGradient = Color("AccentGradientColor")
     let text = Color("TextColor")
     let redGradient1 = Color("RedGradient1")
+    let pinkGradient = Color("PinkGradient")
     
 }
 

@@ -9,27 +9,27 @@ import Foundation
 import SwiftUI
 import CoreData
 
-
 class RSVPViewModel: ObservableObject {
     var coreDataManager: CoreDataManager = CoreDataManager.shared
     
     @Published var text: [String] = [""]
     @Published var activeBook: DownloadedBook?
-    init(){
-        setActiveBook()
-        
-        let didSaveNotification = NSManagedObjectContext.didSaveObjectsNotification
-        NotificationCenter.default.addObserver(self, selector: #selector(didSave(_:)), name: didSaveNotification, object: coreDataManager.container.viewContext)
-    }
-    
-    @Published var wpm: Double = 200
+    @Published var wpm: Double = 500
     @Published var isPlaying: Bool = false
     @Published var showSpeedPopOver: Bool = false
     @Published var currentIndex: Int = 0
     
+    init(){
+        setActiveBook()
+        let didSaveNotification = NSManagedObjectContext.didSaveObjectsNotification
+        NotificationCenter.default.addObserver(self, selector: #selector(didSave(_:)), name: didSaveNotification, object: coreDataManager.container.viewContext)
+    }
+    
     var rsvpText: String { return text[self.currentIndex]}
     
     var timer: Timer?
+    
+    var displayLink: CADisplayLink?
     
     
     @objc func didSave(_ notification: Notification){
@@ -41,28 +41,21 @@ class RSVPViewModel: ObservableObject {
     func setActiveBook(){
         if let activeBook = coreDataManager.getActiveBook(){
             self.activeBook = activeBook
-            self.text = activeBook.text!.replacingOccurrences(of: "\n", with: " ").components(separatedBy: " ")
+            self.text = activeBook.text!.components(separatedBy: " ")
             self.currentIndex = Int(activeBook.currentIndex)
 
         }
     }
-    @objc func stopTimer(){
+    @objc func stopTimer() {
         self.isPlaying = false
         timer?.invalidate()
-        timer = nil
+        //timer = nil
     }
     
-    func toggleIsPlaying(){
-        print("toggled isPlaying")
-        if self.isPlaying {
-            self.stopTimer()
-        }else {
-            self.startTimer()
-        }
-    }
-    @objc func startTimer(){
+    @objc func startTimer() {
         print("started rsvp timer")
         self.isPlaying = true
+
         timer = Timer.scheduledTimer(withTimeInterval: 60/wpm, repeats: true){ timer in
             //print(self.text.count, self.currentIndex)
             if self.currentIndex < self.text.count-1{
@@ -77,11 +70,41 @@ class RSVPViewModel: ObservableObject {
                 }else{
                     self.currentIndex += 1
                 }
-                
+
             }else {
                 self.currentIndex = 0
             }
         }
+    }
+    
+    var animationStart = Date()
+    
+    func start(){
+        self.isPlaying = true
+        displayLink = CADisplayLink(target: self, selector: #selector(animateWords))
+        displayLink?.add(to: .main, forMode: .common)
+    }
+    func stop(){
+        self.isPlaying = false
+        displayLink?.invalidate()
+    }
+    @objc func animateWords(displayLink: CADisplayLink) {
+        var duration = 60/self.wpm
+        let elapsedTime = Date().timeIntervalSince(animationStart)
+        if self.currentIndex < self.text.count-1{
+            //print(self.text[self.text.index(self.text.startIndex, offsetBy: self.currentIndex)].suffix(2))
+            let lastCharofCurrString = self.text[self.text.index(self.text.startIndex, offsetBy: self.currentIndex)].suffix(1)
+            if lastCharofCurrString == "." {
+                duration *= 2
+            }
+        }else {
+            self.currentIndex = 0
+        }
+        if elapsedTime > duration{
+            self.currentIndex += 1
+            self.animationStart = Date()
+        }
+        
     }
     
     func fastForward(){
@@ -97,3 +120,6 @@ class RSVPViewModel: ObservableObject {
     }
     
 }
+
+
+

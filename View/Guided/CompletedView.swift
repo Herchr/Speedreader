@@ -12,14 +12,19 @@ struct CompletedView: View {
         VStack{
             Spacer()
             LottieView(fileName: "Completed_animation", repeats: false)
-                .frame(height: UIScreen.main.bounds.height/2)
+                .frame(height: screen.height/2)
             Text("Session complete!")
-                .font(.title2)
+                .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(Color.theme.text)
             Spacer()
             
         }
+        .frame(height: screen.height + 40)
+        .background(Color.theme.background, in: Rectangle())
+        //.background(Image("GuidedBG3"))
+        
+        
     }
 }
 

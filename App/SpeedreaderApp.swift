@@ -19,6 +19,7 @@ struct SpeedreaderApp: App {
             ZStack{
                 ContentView()
             }
+            .preferredColorScheme(.light)
         }
     }
 }

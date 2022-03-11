@@ -10,7 +10,7 @@ import SwiftUI
 struct ProgressBarView: View {
     let percentage: CGFloat
     
-    let progressBarWidth: CGFloat = UIScreen.main.bounds.width * 0.8
+    let progressBarWidth: CGFloat = screen.width * 0.8
     var computedPercentage: CGFloat {
         progressBarWidth * percentage
     }
@@ -38,7 +38,7 @@ struct ProgressBarView: View {
                 Text("-213m:22s")
                     .foregroundColor(Color.theme.text)
             }
-            .padding(.horizontal, (UIScreen.main.bounds.width - progressBarWidth) / 2)
+            .padding(.horizontal, (screen.width - progressBarWidth) / 2)
         }
     }
 }

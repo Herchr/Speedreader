@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct QuestionView: View {
+    @EnvironmentObject var appViewModel: AppViewModel
     @EnvironmentObject var questionnaireVM: QuestionnaireViewModel
     var firestoreManager: FirestoreManager = FirestoreManager()
     var question: Question
     @State var selectedOption: String = ""
-    
-    var setActiveItem: (ActiveFullScreenCover?) -> Void
-    
     var initialTest: Bool = true
+    @Binding var isActive: Bool
+    @Environment(\.dismiss) private var dismiss
     
     func checkAnswer(){
         if selectedOption == question.answer{
@@ -24,16 +24,18 @@ struct QuestionView: View {
             questionnaireVM.wrongAnswers += 1
         }
         
-        let currentQuestionIndex = Constants.questions.firstIndex(where: {$0 == question})
-        if currentQuestionIndex! + 1 < Constants.questions.count{
-            questionnaireVM.currentQuestion = Constants.questions[currentQuestionIndex!+1]
+        let currentQuestionIndex = questionnaireVM.questions.firstIndex(where: {$0 == question})
+        if currentQuestionIndex! + 1 < questionnaireVM.questions.count{
+            questionnaireVM.currentQuestion = questionnaireVM.questions[currentQuestionIndex!+1]
         }else{
             let comprehensionScore = questionnaireVM.getComprehensionScore()
             if initialTest{
                 firestoreManager.setComprehensionBefore(comprehensionBefore: comprehensionScore)
-                setActiveItem(nil)
+                appViewModel.activeFullScreenCover = nil
             }else{
                 firestoreManager.setComprehensionAfter(comprehensionAfter: comprehensionScore)
+                isActive = false
+                dismiss()
             }
             
             print("nihao in the setcomprehensionscore")
@@ -44,49 +46,57 @@ struct QuestionView: View {
     var body: some View {
         VStack{
             Text("\(question.question!)")
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.bold)
-                .padding(30)
-                .padding(.bottom, 40)
+                .padding(.bottom)
+                .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
+                .frame(height: screen.height * 0.13, alignment: .top)
             
+            QuestionCellView(questionOption: question.optionA!, questionNumber: "A", selectedOption: $selectedOption, checkAnswer: checkAnswer)
+                .padding(.bottom, screen.height*0.02)
+            QuestionCellView(questionOption: question.optionB!, questionNumber: "B", selectedOption: $selectedOption, checkAnswer: checkAnswer)
+                .padding(.bottom, screen.height*0.02)
+                
+            QuestionCellView(questionOption: question.optionC!, questionNumber: "C", selectedOption: $selectedOption, checkAnswer: checkAnswer)
+                .padding(.bottom, screen.height*0.02)
+                
+            QuestionCellView(questionOption: question.optionD!, questionNumber: "D", selectedOption: $selectedOption, checkAnswer: checkAnswer)
+                .padding(.bottom, screen.height*0.05)
             
-            QuestionCellView(questionOption: question.optionA!, questionNumber: "A", selectedOption: $selectedOption)
-                .padding(.bottom, 10)
-            QuestionCellView(questionOption: question.optionB!, questionNumber: "B", selectedOption: $selectedOption)
-                .padding(.bottom, 10)
-            QuestionCellView(questionOption: question.optionC!, questionNumber: "C", selectedOption: $selectedOption)
-                .padding(.bottom, 10)
-            QuestionCellView(questionOption: question.optionD!, questionNumber: "D", selectedOption: $selectedOption)
-                .padding(.bottom, 10)
-            
-            // SUBMIT BUTTON
-            Button(action: checkAnswer, label: {
-                HStack{
-                    Spacer()
-                    Text("SUBMIT")
-                        .foregroundColor(.white)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                        .padding()
-                    Spacer()
-                }
-                .background(LinearGradient(gradient: Gradient(colors: [Color.indigo, Color.mint]), startPoint: .leading, endPoint: .trailing))
-                .cornerRadius(10)
-                .padding(25)
-            })
+//            // SUBMIT BUTTON
+//            Button(action: checkAnswer, label: {
+//                HStack{
+//                    Spacer()
+//                    Text("SUBMIT")
+//                        .foregroundColor(.white)
+//                        .font(.title3)
+//                        .fontWeight(.bold)
+//                        .padding()
+//                    Spacer()
+//                }
+//                .background(Color.theme.accent)
+//                .mask(
+//                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+//                )
+//            })
         } //: VSTACK
-        
-        .background(Color.white)
-        .cornerRadius(15)
-        .padding(.horizontal, 40)
-        .padding(.vertical, 20)
-        .shadow(radius: 10)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 30)
+        .background(.white)
+        .mask(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+        )
+        .padding(.horizontal, 10)
+        //.padding(.vertical, 20)
+        .shadow(radius: 5)
+        .padding(.vertical, 10)
     }
 }
 
-//struct QuestionView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        QuestionView(question: Question(question: "Hva heter verdens tredje høyeste fjell?", optionA: "Mount Everest", optionB: "Kanchenchunga", optionC: "K2", optionD: "Aconcagua", answer: "Kanchenchunga"), showWPMTest: Binding.constant(true))
-//    }
-//}
+struct QuestionView_Previews: PreviewProvider {
+    static var previews: some View {
+        QuestionView(question: Question(question: "Which statement would the author most likely disagree with?", optionA: "Honey badgers like to to eat honey", optionB: "Honey badgers might be the toughest animal.", optionC: "Honey badgers disguise their young to look like cheetah kittens.", optionD: "Honey badgers are not afraid to fight with humans.", answer: "Honey badgers disguise their young to look like cheetah kittens."), isActive: Binding.constant(true))
+            
+    }
+}

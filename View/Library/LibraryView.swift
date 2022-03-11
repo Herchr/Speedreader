@@ -18,13 +18,14 @@ struct LibraryView: View {
                 ZStack{
                     if libraryVM.searchActivated{
                         SearchBar() // For å hindre resten av content i å bli flyttet ned
+                        
                     }
                     else{
                         SearchBar()
                             .matchedGeometryEffect(id: "SEARCHBAR", in: searchbar)
                     }
                 }
-                .frame(width: UIScreen.main.bounds.width / 1.1)
+                .frame(width: screen.width / 1.1)
                 .padding(.horizontal,10)
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -32,20 +33,22 @@ struct LibraryView: View {
                         libraryVM.searchActivated.toggle()
                     }
                 }
-                VStack(alignment: .leading){
+                VStack(alignment: .leading, spacing: 8){
                     Text("Featured")
                         .font(Font.largeTitle.bold())
                         .foregroundColor(.white)
-                        .padding(.top, 40)
+                        .padding(.top, screen.height * 0.03)
                         .padding(.leading, 30)
-                    BookListView(animation: animation)
+                    FeaturedBookListView(animation: animation)
                         .environmentObject(libraryVM)
                 }
-                CategoriesView()
-                    .padding(.vertical, 20)
-                    .environmentObject(libraryVM)
-                    .tabBarPadding()
-
+                VStack {
+                    CategoriesView()
+                        .environmentObject(libraryVM)
+                        .padding(.top, screen.height*0.05)
+                        .ignoresSafeArea(.keyboard, edges: .all)
+                        //.tabBarPadding()
+                }
                 Spacer()
             } //:VSTACK
             .navigationTitle("")
@@ -53,27 +56,32 @@ struct LibraryView: View {
             .background(
                 BlobView()
             )
-            
-            
         } //: ZSTACK
+        
         .overlay(
             ZStack{
                 if libraryVM.searchActivated{
                     SearchView(animation: searchbar)
                         .environmentObject(libraryVM)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
         )
         .overlay(
             ZStack{
                 if libraryVM.showBookView{
-                    BookView(animation: animation)
+                    BookPageView(animation: animation)
                         .environmentObject(libraryVM)
                 }
             }
         )
+        .fullScreenCover(isPresented: $libraryVM.showCategoryBookListView){
+            ZStack{
+                CategoryBookListView(iconName: libraryVM.selectedCategory.title)
+                    .environmentObject(libraryVM)
+            }
+        }
         
-
     }
 }
 
@@ -82,6 +90,6 @@ struct LibraryView_Previews: PreviewProvider {
 //        LibraryView(libraryVM: LibraryViewModel())
 //    }
     static var previews: some View {
-        ContentView()
+        LibraryView()
     }
 }

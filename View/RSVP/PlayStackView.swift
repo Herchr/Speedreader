@@ -14,20 +14,19 @@ struct PlayStackView: View {
         ZStack {
             // SpeedButton
             HStack{
+                Spacer()
                 Button(action: {
-                    withAnimation(.spring()){
+                    withAnimation{
                         rsvpVM.showSpeedPopOver.toggle()
                     }
-                    
-                    print("\(rsvpVM.showSpeedPopOver)")
                 }, label: {
                     Image(systemName:"speedometer")
                         .font(.system(size: 38).weight(.medium))
                         .foregroundColor(.black)
+                        .padding(.trailing)
                 })
-                    .padding(.trailing, 10)
+                    
             }
-            .frame(width: UIScreen.main.bounds.width-20, alignment: .trailing)
             .foregroundColor(Color.theme.accent)
             
             HStack {
@@ -44,12 +43,12 @@ struct PlayStackView: View {
                 // Play/Pause
                 Button(action: {
                     DispatchQueue.main.async {
-                        withAnimation{
-                            rsvpVM.toggleIsPlaying()
+                        withAnimation(.spring()) {
+                            rsvpVM.start()
                         }
                     }
                 }, label: {
-                    Image(systemName: rsvpVM.isPlaying ? "pause.fill" :"play.fill")
+                    Image(systemName: "play.fill")
                         .font(.system(size: 40).weight(.bold))
                         .foregroundColor(.black)
                 })
@@ -78,6 +77,6 @@ struct PlayStackView: View {
 
 struct PlayStackView_Previews: PreviewProvider {
     static var previews: some View {
-        RSVPView(vm: RSVPViewModel())
+        RSVPView(rsvpVM: RSVPViewModel())
     }
 }

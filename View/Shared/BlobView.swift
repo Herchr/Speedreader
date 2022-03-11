@@ -10,18 +10,20 @@ import SwiftUI
 struct BlobView: View {
     var body: some View {
         VStack {
+//            Text("\(screen.width)")
+//            Text("\(screen.height)")
             ZStack {
                 HStack {
                     Spacer()
                     Blob2()
-                        .frame(width: 247, height: 222)
+                        .frame(width: screen.width * 0.659, height: screen.height*0.27)
                         .foregroundStyle(
                             LinearGradient(colors: [Color.theme.redGradient1, Color.theme.accent], startPoint: .topTrailing, endPoint: .bottomLeading)
                         )
                     .offset(x: 0, y: 10)
                 }
                 Blob1()
-                    .frame(width: 390, height: 300)
+                    .frame(width: screen.width * 1.04, height: screen.height*0.35)
                     .foregroundStyle(
                         LinearGradient(colors: [Color.theme.accentGradient, Color.theme.accent], startPoint: .topTrailing, endPoint: .bottomLeading)
                     )
@@ -29,6 +31,7 @@ struct BlobView: View {
             Spacer()
         }
         .ignoresSafeArea()
+        .offset(y: -screen.height*0.1)
     }
 }
 

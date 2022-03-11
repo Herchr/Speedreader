@@ -12,7 +12,7 @@ struct Icon: View {
     @Binding var isEditing: Bool
     var body: some View {
         ZStack {
-            VisualEffectBlur(blurStyle: .light) {
+            ZStack {
                 ZStack{
                     if isEditing{
                         AngularGradient(gradient: Gradient(colors: [Color.theme.accent, Color.theme.accentGradient]), center: .center, angle: .degrees(0))
@@ -24,11 +24,10 @@ struct Icon: View {
                         .cornerRadius(12)
                         .opacity(0.8)
                         .blur(radius: 3)
-                    
-                    
                 }
             }
             .cornerRadius(12)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay(
                 ZStack {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -44,7 +43,7 @@ struct Icon: View {
             )
         }
         .frame(width: 36, height: 36, alignment: .center)
-        .shadow(radius: 5)
+        //.shadow(radius: 5)
         .padding([.vertical, .leading], 8)
         
     }

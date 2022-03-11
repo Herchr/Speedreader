@@ -12,7 +12,7 @@ extension View{
         if started{
             return padding(.bottom, CGFloat(0))
         }
-        return padding(.bottom, CGFloat(90))
+        return padding(.bottom, CGFloat(screen.height*0.16))
     }
     func headerPadding() -> some View{
         return padding(.top, CGFloat(120))

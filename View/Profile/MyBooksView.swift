@@ -19,10 +19,7 @@ struct MyBooksView: View {
             LazyVGrid(columns: columns, spacing:0){
                 ForEach(myBooksVM.books, id: \.self.title){ book in
                     if let img = book.img{
-                        Image(data: img, placeholder: "Beowulf")
-                            .resizable()
-                            .cornerRadius(8)
-                            .frame(width: 130, height: 177, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        BookView(bookTitle: book.title ?? "", bookImg: UIImage(data: img))
                             .onTapGesture{
                                 showActionSheet.toggle()
                                 clickedBook = book
