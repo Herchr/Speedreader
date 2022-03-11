@@ -6,11 +6,15 @@
 //
 
 import CoreData
+import Firebase
+import FirebaseStorage
 
 struct CoreDataManager {
     static let shared = CoreDataManager()
     let container: NSPersistentContainer
     private let entityName: String = "DownloadedBook"
+    
+    let storage = Storage.storage()
     
     
 //    static var preview: PersistenceController = {
@@ -106,7 +110,24 @@ struct CoreDataManager {
         entity.id = UUID()
         entity.currentIndex = 0
         entity.isActive = false
-        save()
+        
+        let storageRef = storage.reference()
+        let textRef = storageRef.child("texts/\(book.title).txt")
+        textRef.getData(maxSize: 15728640){ (data, error) in
+            if let error = error {
+               print("error", error)
+            }
+
+            let text = String(data: data!, encoding: String.Encoding.utf8)
+            entity.text = text
+            save()
+            
+            if self.getActiveBook() == nil{
+                self.setActiveBook(book: entity)
+            }
+        }
+        
+        
     }
     
 //    func add(book: Book){

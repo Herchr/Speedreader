@@ -39,7 +39,7 @@ struct CategoryBookListView: View {
                 LazyVGrid(columns: columns){
                     if let books = libraryVM.filteredBooks{
                         ForEach(books){ book in
-                            BookView(book: book)
+                            BookView(bookTitle: book.title, bookImg: book.img)
                                 .padding(.bottom)
                                 .onTapGesture{
                                     withAnimation{

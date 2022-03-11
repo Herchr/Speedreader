@@ -28,7 +28,7 @@ struct BookPageBodyView: View {
                 Text("\(libraryVM.selectedBook.about)")
                     .foregroundColor(Color.theme.text)
                 .padding(30)
-                .padding(.bottom, 40)
+                .padding(.bottom, 50)
             }
             .overlay(
                 VStack(spacing: 0) {
@@ -36,10 +36,11 @@ struct BookPageBodyView: View {
                     // Right gradient
                     LinearGradient(gradient:
                        Gradient(
-                        colors: [Color.white.opacity(0), Color.white]),
+                        colors: [Color.theme.background.opacity(0), Color.theme.background]),
                            startPoint: .top, endPoint: .bottom
                        )
-                        .frame(height: screen.height * 0.1)
+                        .frame(width: screen.width, height: screen.height * 0.12)
+                        
                 }
              )
         }

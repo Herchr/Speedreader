@@ -26,17 +26,11 @@ struct BookPageHeadView: View {
         //Image, Title, and Author
         VStack {
             HStack(alignment:.top){
-                if let img = libraryVM.selectedBook.img{
-                    Image(uiImage: img)
-                        .resizable()
-                        //.scaledToFit()
-                        //.aspectRatio(contentMode: .fill)
-                        .frame(width: screen.width * 0.35, height: screen.width * 0.48)
-                        .cornerRadius(10)
-                        .shadow(radius: 10, x: 3, y: 8)
-                        .matchedGeometryEffect(id: libraryVM.selectedBook.title, in: animation)
+                BookView(bookTitle: libraryVM.selectedBook.title, bookImg: libraryVM.selectedBook.img)
+                    .scaleEffect(1.1)
+                    .shadow(radius: 5, y: 3)
+                    .matchedGeometryEffect(id: libraryVM.selectedBook.title, in: animation)
                     
-                }
                 VStack(alignment: .center, spacing:0){
                     VStack(spacing: 5){
                         Text("\(libraryVM.selectedBook.title)")
@@ -65,13 +59,19 @@ struct BookPageHeadView: View {
                             .padding(.vertical, screen.height * 0.015)
                             .background(downloaded ? Color.gray : Color.theme.accent)
                             .cornerRadius(100)
-                            .shadow(color: Color.gray, radius: 5, x: 4, y: 4)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 100)
+                                    .stroke(Color.white.opacity(0.5), lineWidth: 1)
+                                    .blendMode(.overlay)
+                            )
+                            .shadow(color: downloaded ? Color.gray : Color.theme.accent, radius: 6, y: 3)
                             .scaleEffect(loadContent ? 1 : 0.5)
+                            
                     }) //: BUTTON
                     .disabled(downloaded)
                 } //: VSTACK
             } //: HSTACK
-            .padding(.top)
+            .padding(.top, screen.height*0.025)
             .padding(.leading, 35)
             .onAppear{
                 if libraryVM.selectedBook.title.count > 0{

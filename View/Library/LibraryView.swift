@@ -90,6 +90,6 @@ struct LibraryView_Previews: PreviewProvider {
 //        LibraryView(libraryVM: LibraryViewModel())
 //    }
     static var previews: some View {
-        ContentView()
+        LibraryView()
     }
 }

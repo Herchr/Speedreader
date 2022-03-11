@@ -144,6 +144,11 @@ struct GuidedView: View {
                         .padding()
                         .padding(.vertical, 30)
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 30, style: .continuous)
+                                .stroke(Color.white, lineWidth: 1)
+                                .blendMode(.overlay)
+                        )
                     Spacer()
                     }
                 }

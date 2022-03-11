@@ -27,10 +27,10 @@ struct Category: Identifiable{
 
 var categories = [
     //Category(title: "All"),
-    Category(title: "History"),
+    //Category(title: "History"),
     Category(title: "Fantasy"),
     Category(title: "Science Fiction"),
     Category(title: "Romance"),
     Category(title: "Mystery"),
-    Category(title: "Self Development")
+   // Category(title: "Self Development")
 ]

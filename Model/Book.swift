@@ -10,10 +10,11 @@ import SwiftUI
 
 struct Book: Identifiable, Equatable, Hashable {
     
-    var id: UUID = UUID()
+    var id: String = UUID().uuidString
     var title: String = ""
     var author: String = ""
     var img: UIImage?
+    var imgUrl: String = ""
     var text: String = ""
     var about: String = ""
     var categories: [Category] = []
@@ -37,15 +38,15 @@ struct Book: Identifiable, Equatable, Hashable {
 }
 
 var bookExamples = [
-    Book(title: "Frankenstein", author: "Mary Shelley", img: UIImage(named: "Frankenstein_Or_The_Modern_Prometheus")!, text: "", about: "Obsessed with the idea of creating life itself, Victor Frankenstein plunders graveyards for the material with which to fashion a new being, shocking his creation to life with electricity. But this botched creature, rejected by its creator and denied human companionship, sets out to destroy Frankenstein and all that he holds dear.", categories: [Category(title: "Horror"), Category(title: "Mystery")]),
+    Book(title: "Frankenstein", author: "Mary Shelley", img: UIImage(color: UIColor.random), text: "", about: "Obsessed with the idea of creating life itself, Victor Frankenstein plunders graveyards for the material with which to fashion a new being, shocking his creation to life with electricity. But this botched creature, rejected by its creator and denied human companionship, sets out to destroy Frankenstein and all that he holds dear.", categories: [Category(title: "Horror"), Category(title: "Mystery")]),
     
     Book(title: "Huckleberry Finn", author: "Mary Shelley", img: UIImage(named: "Huckleberry_Finn")!, text: "", about: "blabla", categories: [Category(title: "Horror"), Category(title: "Mystery")]),
     
     Book(title: "The Scarlett Letter", author: "Mary Shelley", img: UIImage(named: "The_Scarlett_Letter")!, text: "", about: "blabla", categories: [Category(title: "History"), Category(title: "Nonfiction")]),
     
-    Book(title: "Moby Dick", author: "Mary Shelley", img: UIImage(named: "Moby_Dick")!, text: "", about: "blabla", categories: [Category(title: "Romance"), Category(title: "Thriller")]),
+    Book(title: "Moby Dick", author: "Mary Shelley", img: UIImage(named: "Moby Dick; Or, The Whale")!, text: "", about: "blabla", categories: [Category(title: "Romance"), Category(title: "Thriller")]),
     
-    Book(title: "Alice in Wonderland", author: "Lewis Carroll", img: UIImage(named: "Alice_In_Wonderland")!, text: """
+    Book(title: "Alice's Adventures in Wonderland", author: "Lewis Carroll", img: UIImage(named: "Alice's Adventures in Wonderland")!, text: """
 Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, “and what is the use of a book,” thought Alice “without pictures or conversations?”
 
 So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her.

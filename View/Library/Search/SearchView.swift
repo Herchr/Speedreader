@@ -69,13 +69,7 @@ struct SearchView: View {
                                 .padding(.vertical)
                             
                             StaggeredGrid(columns: 2,spacing: 20, list: books) {book in
-                                
-                                if let img = book.img{
-                                    Image(uiImage: img)
-                                        .resizable()
-                                        .frame(width: 150, height: 215)
-                                        .cornerRadius(10)
-                                }
+                                BookView(bookTitle: book.title, bookImg: book.img)
                             }
                         }
                         .padding()

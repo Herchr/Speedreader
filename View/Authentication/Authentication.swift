@@ -24,6 +24,7 @@ struct Authentication: View {
                 print("scooby")
                 return
             }
+            appViewModel.activeFullScreenCover = ActiveFullScreenCover.WPMText
             print("Created user")
         }
     }
@@ -34,6 +35,7 @@ struct Authentication: View {
                 print(error!.localizedDescription)
                 return
             }
+            appViewModel.activeFullScreenCover = nil
             print("User logged in")
         }
     }
@@ -84,10 +86,8 @@ struct Authentication: View {
                         Button(action: {
                             if signupToggle{
                                 signup()
-                                appViewModel.activeFullScreenCover = ActiveFullScreenCover.WPMText
                             }else{
                                 signin()
-                                appViewModel.activeFullScreenCover = nil
                             }
                             
                         }, label: {

@@ -8,6 +8,8 @@
 import Foundation
 import Firebase
 import FirebaseFirestore
+import FirebaseStorage
+import SwiftUI
 
 enum DatabaseError: Error {
     case failed
@@ -15,8 +17,8 @@ enum DatabaseError: Error {
 
 class FirestoreManager: ObservableObject{
     let db = Firestore.firestore()
-    
-    @Published var wpm: Double = 0
+    let storage = Storage.storage()
+    @Published var currentText: String = ""
     
     // MARK: - WPM TEST + QUESTIONNAIRE
     func setWPMBefore(wpmBefore: Double){
@@ -102,17 +104,54 @@ class FirestoreManager: ObservableObject{
     
     // MARK: - LIBRARY BOOKS
     
-    func getBooks(){
-        db.collection("Books").getDocuments{ (querySnapshot, error) in
-            guard error == nil else{
-                print("error fetching from firestore: ", error ?? "")
-                return
-            }
-            var documents: [QueryDocumentSnapshot] = []
-            for doc in querySnapshot!.documents{
-                documents.append(doc)
-            }
-            print(documents)
-        }
-    }
+//    func getBooks() -> [Book]{
+//        var books: [Book] = [Book]()
+//        db.collection("Books").getDocuments{ (querySnapshot, error) in
+//            guard error == nil else{
+//                print("error fetching from firestore: ", error ?? "")
+//                return
+//            }
+//            //var documents: [QueryDocumentSnapshot] = []
+//            
+//            for doc in querySnapshot!.documents{
+//                let data = doc.data()
+//                let id = data["id"] as? String ?? ""
+//                let title = data["title"] as? String ?? ""
+//                let author = data["author"] as? String ?? ""
+//                var img: UIImage?
+//                if let image = UIImage(named: title){
+//                    img = image
+//                }
+//                let imgUrl = data["imgUrl"] as? String ?? ""
+//                let about = data["about"] as? String ?? ""
+//                var categories: [Category] = []
+//                if let cats = data["categories"] as? [String]{
+//                    for cat in cats{
+//                        categories.append(Category(title: cat))
+//                    }
+//                }
+//                
+//                let book = Book(id: id, title: title, author: author, img: img, imgUrl: imgUrl, about: about, categories: categories)
+//                books.append(book)
+//                //documents.append(doc)
+//            }
+//           // print(documents[0]["title"] as? String ?? "g")
+//        }
+//        return books
+//    }
+    
+//    func getText(title: String){
+//        let storageRef = storage.reference()
+//        let textRef = storageRef.child("texts/Frankenstein; Or, The Modern Prometheus.txt")
+//        let handler: (Data?, Error?) -> Void = { (data, error) in
+//            if let error = error {
+//               print("error", error)
+//            }
+//
+//            let text = String(data: data!, encoding: String.Encoding.utf8)
+//            self.currentText = text!
+//        }
+//
+//        textRef.getData(maxSize: 15728640, completion: handler)
+//    }
 }

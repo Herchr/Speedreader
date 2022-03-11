@@ -16,13 +16,14 @@ struct ProfileView: View {
     }
     var body: some View {
             VStack{
-                List{
+                VStack(alignment: .leading, spacing: 0){
                     ProfileListEntryView(entry: ProfileListEntry(symbol: "book.circle", title: "My books", destination: AnyView(MyBooksView())))
-                    NavigationLink(destination:
-                                    WPMText(initialTest: false, isActive: $showWPMTest)
-                                        .navigationBarBackButtonHidden(true)
-                                        .navigationTitle("")
-                                        .navigationBarHidden(true),
+                    Divider()
+                        .padding(.horizontal)
+                    NavigationLink(destination: WPMText(initialTest: false, isActive: $showWPMTest)
+                                                    .navigationBarBackButtonHidden(true)
+                                                    .navigationTitle("")
+                                                    .navigationBarHidden(true),
                                    isActive: $showWPMTest){
                         HStack{
                             ZStack {
@@ -33,20 +34,42 @@ struct ProfileView: View {
                                 .font(.title3)
                                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                                 //.opacity(/*@START_MENU_TOKEN@*/0.8/*@END_MENU_TOKEN@*/)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(Font.caption.bold())
                         } //:HSTACK
-                        .padding(.vertical)
+                        .padding([.vertical, .leading, .trailing])
                         
                     }
+                    Divider()
+                        .padding(.horizontal)
 //                    .onTapGesture {
 //                        showWPMTest = true
 //                    }
                     
-                    ProfileListEntryView(entry: ProfileListEntry(symbol: "chart.xyaxis.line", title: "Statistics"))
+//                    ProfileListEntryView(entry: ProfileListEntry(symbol: "chart.xyaxis.line", title: "Statistics"))
+//                    Divider()
+//                        .padding(.horizontal)
                     ProfileListEntryView(entry: ProfileListEntry(symbol: "eyedropper", title: "Theme"))
+                    Divider()
+                        .padding(.horizontal)
                     ProfileListEntryView(entry: ProfileListEntry(symbol: "questionmark.circle", title: "Help and support"))
                     
                 } //:LIST
                 .shadow(color: Color.gray, radius: 5, y: 3)
+                .frame(width: screen.width * 0.9)
+                .background(.ultraThinMaterial)
+                .foregroundColor(.white)
+                .mask(
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .stroke(Color.white, lineWidth: 1)
+                        .blendMode(.overlay)
+                )
+                .padding(.top, 20)
+                
                 Spacer()
                 HStack{
                     SignOutButton()
@@ -54,7 +77,15 @@ struct ProfileView: View {
                 }
                 .padding()
                 
-            }//:ZSTACK
+            }//:VSTACK
+            .background(
+                ZStack{
+                    Image("GuidedBG4")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .scaleEffect(1.2)
+                }
+            )
     }
 }
 
@@ -99,23 +130,28 @@ struct SignOutButton: View {
             appViewModel.activeFullScreenCover = ActiveFullScreenCover.Auth
             
         }, label: {
-            Color.white
-                .cornerRadius(12)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            Color.clear
+                .cornerRadius(16)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .overlay(
                     ZStack {
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(.white.opacity(0.7), lineWidth: 1)
-                        .blendMode(.overlay)
-                        LinearGradient(colors: [Color.black, Color.gray], startPoint: .topLeading, endPoint: .bottomTrailing)
+//                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+//                            .stroke(.white.opacity(0.3), lineWidth: 1)
+//                        .blendMode(.overlay)
+                        LinearGradient(colors: [Color.white, Color.white.opacity(0.6)], startPoint: .topLeading, endPoint: .bottomTrailing)
                             .mask(
                                 Image(systemName: "rectangle.portrait.and.arrow.right")
-                                    .font(.system(size: 17, weight: .medium))
+                                    .font(.system(size: 20, weight: .medium))
                             )
                         
                     }
                 )
-                .frame(width: 36, height: 36, alignment: .center)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Color.white, lineWidth: 1)
+                        .blendMode(.overlay)
+                )
+                .frame(width: 44, height: 44, alignment: .center)
                 
         })
     }

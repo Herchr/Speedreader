@@ -10,14 +10,18 @@ import CloudKit
 import UIKit
 import SwiftUI
 import Combine
+import Firebase
+import FirebaseFirestore
+import FirebaseStorage
 
 class LibraryViewModel: ObservableObject {
-    
+    // MARK: - FIRESTORE
+    let db = Firestore.firestore()
     // MARK: - BOOKLISTVIEW
-    @Published var books: [Book] = bookExamples
+    @Published var books: [Book] = [Book]()
     
     // MARK: - FEATURED BOOKLIST
-    //@Published var featuredBooks: [Book] = bookExamples
+    @Published var featuredBooks: [Book] = [Book]()
     
     // MARK: - BOOKVIEW
     @Published var showBookView: Bool = false
@@ -34,28 +38,30 @@ class LibraryViewModel: ObservableObject {
     
     var searchCancellable: AnyCancellable?
     var selectCategoryCancellable: AnyCancellable?
-//    init(){
-//        if self.books.isEmpty{
-//            self.fetchBooks()
-//        }
-//
-//        searchCancellable = $searchText.removeDuplicates()
-//            .debounce(for: 0.5, scheduler: RunLoop.main)
-//            .sink(receiveValue: { str in
-//                if str != ""{
-//                    self.filterBooksBySearch()
-//                }
-//                else{
-//                    self.searchedBooks = nil
-//                }
-//            })
-//        selectCategoryCancellable = $selectedCategory
-//            .debounce(for: 0.1, scheduler: RunLoop.main)
-//            .sink(receiveValue: { _ in
-//
-//                self.filterBooksByCategory()
-//        })
-//    }
+    
+
+    init(){
+        if self.books.isEmpty{
+            self.getBooks()
+        }
+
+        searchCancellable = $searchText.removeDuplicates()
+            .debounce(for: 0.5, scheduler: RunLoop.main)
+            .sink(receiveValue: { str in
+                if str != ""{
+                    self.filterBooksBySearch()
+                }
+                else{
+                    self.searchedBooks = nil
+                }
+            })
+        selectCategoryCancellable = $selectedCategory
+            .debounce(for: 0.1, scheduler: RunLoop.main)
+            .sink(receiveValue: { _ in
+
+                self.filterBooksByCategory()
+        })
+    }
     
     func parseRecord(record: CKRecord) -> Book{
         var book = Book()
@@ -161,6 +167,52 @@ class LibraryViewModel: ObservableObject {
                         return book
                     })
                 }
+            }
+        }
+    }
+    
+    // MARK: - FIRESTORE
+    func getBooks(){
+        db.collection("Books").getDocuments{ (querySnapshot, error) in
+            guard error == nil else{
+                print("error fetching from firestore: ", error ?? "")
+                return
+            }
+            //var documents: [QueryDocumentSnapshot] = []
+            for doc in querySnapshot!.documents{
+                let data = doc.data()
+                let id = doc.documentID
+                let title = data["title"] as? String ?? ""
+                let author = data["author"] as? String ?? ""
+                var img: UIImage?
+                if let image = UIImage(named: title){
+                    img = image
+                }else{
+                    img = UIImage(color: UIColor.random)
+                }
+                let imgUrl = data["imgUrl"] as? String ?? ""
+                let about = data["about"] as? String ?? ""
+                var categories: [Category] = []
+                if let cats = data["categories"] as? [String]{
+                    for cat in cats{
+                        categories.append(Category(title: cat))
+                    }
+                }
+                if title == "Alice's Adventures in Wonderland"{
+                    print(id)
+                }
+                let book = Book(id: id, title: title, author: author, img: img, imgUrl: imgUrl, about: about, categories: categories)
+                if let featured = data["featured"] as? Bool{
+                    if featured{
+                        withAnimation {
+                            self.featuredBooks.append(book)
+                        }
+                        print("\(title) \(id)")
+                    }
+                }
+                self.books.append(book)
+                
+                //documents.append(doc)
             }
         }
     }

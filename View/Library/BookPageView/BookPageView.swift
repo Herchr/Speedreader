@@ -19,7 +19,7 @@ struct BookPageView: View {
             BookPageBackgroundView()
                 .ignoresSafeArea()
             
-            VStack{
+            VStack(spacing: 0){
                 BookPageBackButtonView()
                 BookPageHeadView(rectangleSize: rectangleSize, animation: animation)
                     .environmentObject(libraryVM)

@@ -12,19 +12,23 @@ struct BookPageBackgroundView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             VStack {
-                Image(data: libraryVM.selectedBook.img?.pngData(), placeholder: "Beowulf")
-                    .resizable()
-                    .scaledToFit()
-                    .blur(radius: 10)
-                    .scaleEffect(1.05)
-                    
-                    
+                if let img = libraryVM.selectedBook.img?.pngData(){
+                    Image(uiImage: UIImage(data: img)!)
+                        .resizable()
+                        .scaledToFit()
+                        .blur(radius: 12)
+                        .scaleEffect(1.1)
+                        .overlay(
+                            Color.black.opacity(0.1)
+                        )
+                }
                 Spacer()
             }
             Color.theme.background
                 .frame(width: screen.width, height: screen.height*0.7)
                 .shadow(radius: 6)
                 .clipShape(RightRoundedRectangle(radius: 60))
+                .ignoresSafeArea()
 
         }
         .edgesIgnoringSafeArea(.top)

@@ -35,7 +35,7 @@ struct GenreIcon: View {
                         .fill(Color("\(iconName)"))
                         .blur(radius: 6)
                         .opacity(0.3)
-                        .frame(width: screen.height*0.065, height: screen.height*0.065)
+                        .frame(width: screen.height*0.06, height: screen.height*0.055)
                     Spacer()
                 }
                     .padding(.top, screen.height*0.030)

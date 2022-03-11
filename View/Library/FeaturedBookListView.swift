@@ -26,13 +26,11 @@ struct FeaturedBookListView: View {
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHGrid(rows: rows, spacing:0) {
-                    if let books = libraryVM.books{
+                    if let books = libraryVM.featuredBooks{
                         ForEach(books, id: \.self.id){ book in
                             VStack {
-                                BookView(book: book)
+                                BookView(bookTitle: book.title, bookImg: book.img)
                                     .matchedGeometryEffect(id: book.title, in: animation)
-                                
-                                
                                 Text("\(book.title)")
                                     .font(Font.caption.bold())
                                     .foregroundColor(Color.theme.text)
