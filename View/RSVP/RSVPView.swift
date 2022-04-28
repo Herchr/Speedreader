@@ -12,73 +12,72 @@ struct RSVPView: View {
     @ObservedObject var rsvpVM: RSVPViewModel
     @StateObject var firestoreManager: FirestoreManager = FirestoreManager() 
     @EnvironmentObject var appViewModel: AppViewModel
+    
+    @State var disabled: Bool = false
     // MARK: - BODY
     var body: some View {
         ZStack {
-            if !rsvpVM.isPlaying{
-                VStack{
-                    Text("Practice")
-                        .font(Font.largeTitle.bold())
-                        .foregroundColor(.white)
-                        .padding(.bottom, 20)
-                    ZStack {
-                        Image(data:rsvpVM.activeBook?.img, placeholder: "Beowulf")
-                            .resizable()
-                            .frame(width: 100, height: 130)
-                            .cornerRadius(6)
-                    }
-                    .padding(22)
-                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(.linearGradient(colors: [.white.opacity(0.8),  .clear], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 3)
-                            .blendMode(.overlay)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(.linearGradient(colors: [.gray.opacity(0.4), .clear], startPoint: .bottomTrailing, endPoint: .topLeading), lineWidth: 0.5)
-                    )
-                    Spacer()
-                }
-                .padding(.top)
-                .transition(.move(edge: .top))
-                .zIndex(1)
-            }
-            
-            //Text
-            if rsvpVM.isPlaying{
-                Button {
-                    DispatchQueue.main.async {
-                        withAnimation(.spring()) {
-                            rsvpVM.stop()
+            if let img = rsvpVM.activeBook?.img{
+                if !rsvpVM.isPlaying{
+                    VStack(spacing:0){
+                        Text("Practice")
+                            .font(Font.largeTitle.bold())
+                            .foregroundColor(.white)
+                            //.padding(.bottom, 20)
+                        ZStack {
+                            //BookOnShelfView(bookTitle: "Siddhartha")
+                            BookOnShelfView(bookTitle: rsvpVM.activeBook?.title ?? "", bookImg: UIImage(data: img))
                         }
+                        Spacer()
                     }
-                } label: {
-                    Color.clear
-                        .ignoresSafeArea()
+                    //.padding(.top)
+                    .transition(.move(edge: .top))
+                    .zIndex(1)
+                    
                 }
-                .zIndex(1)
-            }
-            RSVPTextView(rsvpVM: rsvpVM)
-                .padding(20)
-                .frame(width: screen.width / 1.1)
-                //.background(Color.white, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                 
-                
-            
+                //Text
+                if rsvpVM.isPlaying{
+                    Button {
+                        DispatchQueue.main.async {
+                            withAnimation(.spring()) {
+                                rsvpVM.stop()
+                            }
+                        }
+                    } label: {
+                        Color.clear
+                            .ignoresSafeArea()
+                    }
+                    .zIndex(1)
+                }
+                RSVPTextView(rsvpVM: rsvpVM)
+                    .padding(20)
+                    .frame(width: screen.width / 1.1)
+                    //.background(Color.white, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    
                 VStack{
                     Spacer()
                     if !rsvpVM.isPlaying{
-                        ProgressBarView(percentage: 0.37)
+                        ProgressBarView(rsvpVM: rsvpVM)
                             .transition(.move(edge: .leading))
                     }
                     if !rsvpVM.isPlaying{
                         PlayStackView(rsvpVM: rsvpVM)
                             .padding(.vertical, 20)
                             .transition(.move(edge: .trailing))
+                            .disabled(disabled)
                     }
                 } //: VStack
                 .tabBarPadding()
                 .zIndex(1)
+            }else{
+                VStack {
+                    Spacer()
+                    Text("Download a book from the library to start reading.")
+                        .font(Font.title.bold())
+                    Spacer()
+                }
+            }
                 
             
         } //:ZSTACK
@@ -90,6 +89,7 @@ struct RSVPView: View {
             if newValue{
                 withAnimation(.spring()){
                     appViewModel.showTabBar = false
+                    print("rsvp")
                 }
             }else{
                 withAnimation(.spring()){
@@ -99,7 +99,7 @@ struct RSVPView: View {
         })
         .background(
             ZStack{
-                if !rsvpVM.isPlaying{
+                if !rsvpVM.isPlaying && rsvpVM.activeBook?.img != nil{
                     BlobView()
                         .transition(.move(edge: .top))
                         .zIndex(1)
@@ -113,6 +113,12 @@ struct RSVPView: View {
                 }
             }
         )
+        .onDisappear {
+            disabled = true
+        }
+        .onAppear{
+            disabled = false
+        }
     }
 }
 

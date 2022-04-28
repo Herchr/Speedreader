@@ -27,12 +27,13 @@ struct ProfileListEntryView: View {
             } //:HSTACK
             .padding([.vertical, .leading, .trailing])
             .padding(.vertical, 5)
+            
         }
     }
 }
 
 struct ProfileListEntryView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileView(rsvpVM: RSVPViewModel())
     }
 }

@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct ProgressBarView: View {
-    let percentage: CGFloat
+    let percentage: CGFloat = 0.37
     
     let progressBarWidth: CGFloat = screen.width * 0.8
     var computedPercentage: CGFloat {
         progressBarWidth * percentage
     }
+    
+    @ObservedObject var rsvpVM: RSVPViewModel
     
     var body: some View {
         VStack {
@@ -24,7 +26,7 @@ struct ProgressBarView: View {
                     .cornerRadius(30)
                 Rectangle()
                     .overlay(LinearGradient(gradient: Gradient(colors: [Color.theme.accent, Color.theme.accent]), startPoint: .leading, endPoint: .trailing))
-                    .frame(width: computedPercentage, height: 8, alignment: .leading)
+                    .frame(width: progressBarWidth * rsvpVM.getPercentageProgress(), height: 8, alignment: .leading)
                     .cornerRadius(30)
             }
             .overlay(
@@ -32,13 +34,11 @@ struct ProgressBarView: View {
                     .stroke(Color.theme.accent, lineWidth: 2)
             )
             HStack{
-                Text("103m:35s")
-                    .foregroundColor(Color.theme.text)
                 Spacer()
-                Text("-213m:22s")
+                Text("-\(rsvpVM.getTimeRemaining()) minutes")
                     .foregroundColor(Color.theme.text)
             }
-            .padding(.horizontal, (screen.width - progressBarWidth) / 2)
+            .padding(.horizontal, screen.width*0.1)
         }
     }
 }
@@ -46,6 +46,6 @@ struct ProgressBarView: View {
 
 struct ProgressBarView_Previews: PreviewProvider {
     static var previews: some View {
-        ProgressBarView(percentage: 0.37)
+        ProgressBarView(rsvpVM: RSVPViewModel())
     }
 }

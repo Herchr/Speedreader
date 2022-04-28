@@ -18,10 +18,10 @@ struct KineticTextView: View {
                         HStack(spacing: 0) {
                             ForEach(Array(zip(sentenceArray.indices, sentenceArray)), id: \.0){ j, w in
                                 Text("\(w) ")
+                                    .font(Font.system(.body, design: .serif))
                                     .foregroundColor(Color.theme.text)
                             }
                         }
-                        //.border(Color.black)
                         .background(
                             GeometryReader{ geo -> Color in
                                 DispatchQueue.main.async {
@@ -30,19 +30,6 @@ struct KineticTextView: View {
                                 return Color.clear
                             }
                         )
-//                        .background(
-//                            VStack(alignment: .leading) {
-//                                Spacer()
-//                                HStack{
-//                                    Spacer()
-//                                    RoundedRectangle(cornerRadius: -12)
-//                                        .fill(Color.white)
-//                                        .frame(width: 100)
-//                                        .offset(x: 100, y: 4)
-//
-//                                }
-//                            }
-//                        )
                         .background(
                             VStack(alignment: .leading) {
                                 Spacer()
@@ -57,7 +44,6 @@ struct KineticTextView: View {
                                         .opacity(kineticVM.finishingLineOpacity)
                                     Spacer()
                                 }
-                                
                             }
                             .offset(y: 3)
                             

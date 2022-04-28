@@ -13,7 +13,7 @@ import SwiftUI
 class KineticViewModel: ObservableObject {
     var coreDataManager: CoreDataManager = CoreDataManager.shared
 
-    var text: [String] = [String]()
+    @Published var text: [String] = [String]()
     var currentIndex: Int = 0  // Set to users index of the current book
     @Published var activeBook: DownloadedBook?
     @Published var kineticText: [[String]]?// = [[""]]//Constants.dummyText.components(separatedBy: " ") //Set to empty array
@@ -41,7 +41,7 @@ class KineticViewModel: ObservableObject {
     
     var timer: Timer?
     let charsPerRow: Int = 36
-    let rows: Int = 20
+    let rows: Int = Int(screen.height / 35)
 
     var wordCount: Int = 1
     var currentInterval: Double {
@@ -55,8 +55,7 @@ class KineticViewModel: ObservableObject {
 //        let updatedObjectsKey = NSManagedObjectContext.NotificationKey.updatedObjects.rawValue
 //        print(notification.userInfo?[updatedObjectsKey])
         setActiveBook()
-        fetchKineticText()
-        //self.currentIndex = 0
+        self.currentIndex = 0
         self.currentLine = 0
     }
     
@@ -64,6 +63,7 @@ class KineticViewModel: ObservableObject {
         if let activeBook = coreDataManager.getActiveBook(){
             self.activeBook = activeBook
             self.text = activeBook.text!.components(separatedBy: " ")
+            self.fetchKineticText()
            // self.currentIndex = Int(activeBook.currentIndex)
         }
     }
@@ -71,14 +71,15 @@ class KineticViewModel: ObservableObject {
     // FETCHING 1 WORD
     
     func fetchKineticText() -> Void{//[[String]] {
-        
-        
+        print("fetching")
         var newText: [[String]] = [[String]]()
         var currentRowText: [String] = [String]()
         var currentRowWordCount: Int = 0
         var currentTextWordCount: Int = 0
-        if self.text.count > 100{
-            for word in text[self.currentIndex..<self.currentIndex + rows * charsPerRow]{
+        if self.text.count > self.currentIndex + rows * charsPerRow{ // Change so that it gets the last part of the book as well
+            print("currentindex \(self.currentIndex)")
+            let endIndex = self.currentIndex + rows * charsPerRow
+            for word in text[self.currentIndex..<endIndex]{
 
                 if newText.count > rows{
                     break
@@ -95,16 +96,10 @@ class KineticViewModel: ObservableObject {
                 currentRowText.append(word)
             }
         }
-        
-//        for s in newText{
-//            for w in s{
-//                bookIndex += w.count
-//            }
-//        }
         self.wordCount = currentTextWordCount
-        if currentTextWordCount > 1{
-            self.currentIndex += currentTextWordCount - 1
-        }
+//        if currentTextWordCount > 1{
+//            self.currentIndex += currentTextWordCount - 1
+//        }
         self.wordsInCurrentKineticText = Double(newText.flatMap{ $0 }.count)
         
        // self.charsInCurrentKineticText = Double(newText.flatMap{ $0 }.joined(separator: " ").count)
@@ -158,17 +153,11 @@ class KineticViewModel: ObservableObject {
                 self.animateLine()
                 
             }else{
-//                withAnimation {
-//                    self.showKinetic = false
-//                }
-                self.fetchKineticText()
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-//                    withAnimation {
-//                        self.showKinetic = true
-//                    }
-//                }
+                
+                self.currentIndex += self.wordCount - 1
                 self.currentLine = 0
                 self.pointerOffset = 0
+                self.fetchKineticText()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
                     self.animateLine()
                 }

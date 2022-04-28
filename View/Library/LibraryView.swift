@@ -18,7 +18,6 @@ struct LibraryView: View {
                 ZStack{
                     if libraryVM.searchActivated{
                         SearchBar() // For å hindre resten av content i å bli flyttet ned
-                        
                     }
                     else{
                         SearchBar()

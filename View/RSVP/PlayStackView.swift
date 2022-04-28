@@ -16,13 +16,15 @@ struct PlayStackView: View {
             HStack{
                 Spacer()
                 Button(action: {
-                    withAnimation{
-                        rsvpVM.showSpeedPopOver.toggle()
+                    DispatchQueue.main.async {
+                        withAnimation{
+                                rsvpVM.showSpeedPopOver.toggle()
+                        }
                     }
                 }, label: {
                     Image(systemName:"speedometer")
-                        .font(.system(size: 38).weight(.medium))
-                        .foregroundColor(.black)
+                        .font(.title)
+                        .foregroundColor(Color.theme.text)
                         .padding(.trailing)
                 })
                     
@@ -30,16 +32,12 @@ struct PlayStackView: View {
             .foregroundColor(Color.theme.accent)
             
             HStack {
-                // Go Backward
-//                Button(action: rsvpVM.rewind, label: {
-//                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accentGradient]), startPoint: .top, endPoint: .bottom)
-//                        .mask(
-//                            Image(systemName: "gobackward.30")
-//                                .resizable()
-//                                .frame(width: 30, height: 30)
-//                        )
-//                        .frame(width: 30, height: 30)
-//                })
+                 //Go Backward
+                Button(action: rsvpVM.rewind, label: {
+                    Image(systemName: "gobackward.30")
+                        .font(.title)
+                })
+                    .frame(width: 44, height: 44)
                 // Play/Pause
                 Button(action: {
                     DispatchQueue.main.async {
@@ -49,25 +47,18 @@ struct PlayStackView: View {
                     }
                 }, label: {
                     Image(systemName: "play.fill")
-                        .font(.system(size: 40).weight(.bold))
-                        .foregroundColor(.black)
+                        .font(.largeTitle.bold())
                 })
                 .frame(width: 70, height: 70)
-                .padding(.horizontal,40)
+                .padding(.horizontal,10)
                 
                 // Go Forward
-//                Button(action: rsvpVM.fastForward, label: {
-//                    LinearGradient(gradient: Gradient(colors: [Color.theme.accentGradient, Color.theme.accentGradient]), startPoint: .top, endPoint: .bottom)
-//                        .mask(
-//                            Image(systemName: "goforward.30")
-//                                .resizable()
-//                                .frame(width: 30, height: 30)
-//                        )
-//                        .frame(width: 30, height: 30)
-//
-//                })
+                Button(action: rsvpVM.fastForward, label: {
+                    Image(systemName: "goforward.30")
+                        .font(.title)
+                })
+                    .frame(width: 44, height: 44)
             } //: HSTACK
-            .foregroundColor(Color.theme.accent)
             
         } //: ZSTACK
         .foregroundColor(.black)

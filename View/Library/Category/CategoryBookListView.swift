@@ -24,17 +24,19 @@ struct CategoryBookListView: View {
                     }
                 }, label: {
                     Image(systemName: "xmark")
+                        .font(.title)
                         .foregroundStyle(.black)
                 })
+                    .frame(width: 44, height: 44)
                 Spacer()
             }
             .padding(.leading)
             HStack {
                 Text("\(iconName) books")
                     .font(Font.largeTitle.bold())
-                Spacer()
             }
-            .padding(50)
+            .padding(20)
+            .padding(.bottom)
             ScrollView{
                 LazyVGrid(columns: columns){
                     if let books = libraryVM.filteredBooks{

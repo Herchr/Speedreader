@@ -26,22 +26,25 @@ struct ContentView: View {
                     if appViewModel.showTabBar{
                         CustomTabBarView(vr: viewRouter)
                             .transition(.move(edge: .bottom))
-                            .zIndex(1)
+                            .zIndex(3)
                     }
                     switch viewRouter.selectedTab {
                     case viewRouter.tabImages[0]:
                         RSVPView(rsvpVM: rsvpVM)
-                           // .zIndex(2)
+                            .zIndex(1)
                     case viewRouter.tabImages[1]:
                         GuidedView(rsvpVM: rsvpVM, kineticVM: kineticVM)
-                            //.zIndex(2)
+                            .zIndex(1)
                     case viewRouter.tabImages[2]:
                             LibraryView()
-                                .zIndex(2)
+                                .zIndex(4)
+                    case viewRouter.tabImages[3]:
+                        ProfileView(rsvpVM: rsvpVM)
+                            .zIndex(2)
                     default:
-                        ProfileView()
-                           // .zIndex(2)
-                            .tabBarPadding()
+                        ZStack{
+                            Color.clear
+                        }
                     }
                 }
             } //:ZSTACK

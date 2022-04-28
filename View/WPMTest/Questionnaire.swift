@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Questionnaire: View {
     @StateObject var questionnaireVM: QuestionnaireViewModel = QuestionnaireViewModel()
+    var firestoreManager: FirestoreManager = FirestoreManager()
     
     var initialTest: Bool = true
     @Binding var isActive: Bool
@@ -38,12 +39,21 @@ struct Questionnaire: View {
         } //: VSTACK
         .background(LinearGradient(colors: [Color.theme.accent, Color.theme.pinkGradient], startPoint: .topLeading, endPoint: .bottomTrailing))
         .environmentObject(questionnaireVM)
-        .onAppear{
-            if initialTest{
+//        .onAppear{
+//            if initialTest{
+//                questionnaireVM.questions = Constants.honeyBadgerQuestions
+//            }else{
+//                questionnaireVM.questions = Constants.dodoQuestions
+//            }
+//        }
+        .task {
+            let textGroup = await firestoreManager.getTextGroup()
+            if (textGroup == "A" && initialTest) || (textGroup == "B" && !initialTest){
                 questionnaireVM.questions = Constants.honeyBadgerQuestions
             }else{
                 questionnaireVM.questions = Constants.dodoQuestions
             }
+                    
         }
         
     }

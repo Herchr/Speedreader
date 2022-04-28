@@ -65,7 +65,7 @@ struct RSVPTextView: View {
             ZStack {
                 HStack {
                     Text(rsvpVM.rsvpText)
-                        .font(.title)
+                        .font(Font.system(.title, design: .serif))
                         .foregroundColor(Color.black)
                 } //: HStack
             }

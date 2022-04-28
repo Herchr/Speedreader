@@ -8,6 +8,7 @@
 import CoreData
 import Firebase
 import FirebaseStorage
+import PDFKit
 
 struct CoreDataManager {
     static let shared = CoreDataManager()
@@ -126,8 +127,42 @@ struct CoreDataManager {
                 self.setActiveBook(book: entity)
             }
         }
-        
-        
+    }
+    
+    func uploadPDF(result: Result<URL, Error>){
+        switch result {
+        case .success(let url):
+            if url.startAccessingSecurityScopedResource(){
+                if let pdf = PDFDocument(url: url) {
+                    let pageCount = pdf.pageCount
+                    let documentContent = NSMutableAttributedString()
+
+                    for i in 0 ..< pageCount {
+                        guard let page = pdf.page(at: i) else { continue }
+                        guard let pageContent = page.attributedString else { continue }
+                        documentContent.append(pageContent)
+                    }
+                    let entity = DownloadedBook(context: container.viewContext)
+                    entity.title = url.lastPathComponent //FileName
+                    entity.id = UUID()
+                    entity.currentIndex = 0
+                    entity.about = ""
+                    entity.author = ""
+                    //entity.isActive = false
+                    entity.img = UIImage(color: UIColor.random)?.pngData()
+                    entity.text = documentContent.string
+                    if self.getActiveBook() == nil{
+                        self.setActiveBook(book: entity)
+                    }
+                    save()
+                }else{
+                    print("no pdf")
+                }
+            }
+            
+        case .failure(let error):
+            print(error.localizedDescription)
+        }
     }
     
 //    func add(book: Book){

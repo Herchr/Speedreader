@@ -65,8 +65,8 @@ struct TabBarButton: View {
                     }
                 }, label: {
                     Image(systemName: "\(image)\(vr.selectedTab == image ? ".fill" : ".fill")")
-                        .font(.system(size: 26, weight: .black))
-                        .foregroundColor(vr.selectedTab == image ? Color.theme.accent : Color.black)
+                        .font(.system(size: 26, weight: .bold))
+                        .foregroundColor(vr.selectedTab == image ? Color.theme.accent : Color.theme.primary)
                         .offset(y: vr.selectedTab == image ? -10 : 0)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                 })

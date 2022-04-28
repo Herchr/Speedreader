@@ -188,7 +188,7 @@ class LibraryViewModel: ObservableObject {
                 if let image = UIImage(named: title){
                     img = image
                 }else{
-                    img = UIImage(color: UIColor.random)
+                    img = UIImage(color: UIColor(named: "Color\((Int(id) ?? 0)%11 + 1)")!)
                 }
                 let imgUrl = data["imgUrl"] as? String ?? ""
                 let about = data["about"] as? String ?? ""
@@ -198,16 +198,13 @@ class LibraryViewModel: ObservableObject {
                         categories.append(Category(title: cat))
                     }
                 }
-                if title == "Alice's Adventures in Wonderland"{
-                    print(id)
-                }
                 let book = Book(id: id, title: title, author: author, img: img, imgUrl: imgUrl, about: about, categories: categories)
                 if let featured = data["featured"] as? Bool{
                     if featured{
                         withAnimation {
                             self.featuredBooks.append(book)
                         }
-                        print("\(title) \(id)")
+                        //print("\(title) \(id)")
                     }
                 }
                 self.books.append(book)

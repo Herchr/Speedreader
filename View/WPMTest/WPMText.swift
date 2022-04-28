@@ -108,12 +108,21 @@ struct WPMText: View {
         .fullScreenCover(isPresented: $showQuestionnaire) {
             Questionnaire(initialTest: initialTest, isActive: $isActive)
         }
-        .onAppear{
-            if initialTest{
+//        .onAppear{
+//            if initialTest{
+//                wpmTestVM.wpmText = Constants.honeyBadgerText
+//            }else{
+//                wpmTestVM.wpmText = Constants.dodoText
+//            }
+//        }
+        .task {
+            let textGroup = await firestoreManager.getTextGroup()
+            if (textGroup == "A" && initialTest) || (textGroup == "B" && !initialTest){
                 wpmTestVM.wpmText = Constants.honeyBadgerText
             }else{
                 wpmTestVM.wpmText = Constants.dodoText
             }
+                    
         }
         
     }

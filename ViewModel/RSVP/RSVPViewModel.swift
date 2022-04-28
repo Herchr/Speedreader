@@ -18,7 +18,11 @@ class RSVPViewModel: ObservableObject {
     @Published var isPlaying: Bool = false
     @Published var showSpeedPopOver: Bool = false
     @Published var currentIndex: Int = 0
+    @Published var punctuationPause: Bool = true
     
+    var textCount: Int{
+        text.count
+    }
     init(){
         setActiveBook()
         let didSaveNotification = NSManagedObjectContext.didSaveObjectsNotification
@@ -91,11 +95,13 @@ class RSVPViewModel: ObservableObject {
     @objc func animateWords(displayLink: CADisplayLink) {
         var duration = 60/self.wpm
         let elapsedTime = Date().timeIntervalSince(animationStart)
-        if self.currentIndex < self.text.count-1{
+        if self.currentIndex < self.textCount{
             //print(self.text[self.text.index(self.text.startIndex, offsetBy: self.currentIndex)].suffix(2))
-            let lastCharofCurrString = self.text[self.text.index(self.text.startIndex, offsetBy: self.currentIndex)].suffix(1)
-            if lastCharofCurrString == "." {
-                duration *= 2
+            if punctuationPause{
+                let lastCharofCurrString = self.text[self.text.index(self.text.startIndex, offsetBy: self.currentIndex)].suffix(1)
+                if lastCharofCurrString == "." {
+                    duration *= 2
+                }
             }
         }else {
             self.currentIndex = 0
@@ -107,12 +113,20 @@ class RSVPViewModel: ObservableObject {
         
     }
     
+    func getPercentageProgress() -> Double{
+        return Double(self.currentIndex) / Double(self.textCount)
+    }
+    
+    func getTimeRemaining() -> Int{
+        return (self.textCount - self.currentIndex)/Int(self.wpm)
+    }
+    
     func fastForward(){
         if self.currentIndex + 30 < text.count{
             self.currentIndex += 30
         }
     }
-    
+
     func rewind(){
         if self.currentIndex - 30 > 0{
             self.currentIndex -= 30

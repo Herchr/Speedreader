@@ -15,12 +15,15 @@ struct GuidedView: View {
     var firestoreManager: FirestoreManager = FirestoreManager()
     
     @State var inFocus: Bool = false
+    @State var kinetic: Bool = true
+    //@State var countdownFinished = false
     
     func startGuided(sessionType: SessionType){
         guidedVM.sessionType = sessionType
-        guidedVM.started = true
         withAnimation{
+            guidedVM.started = true
             globalVM.showTabBar = false
+            print("guided")
         }
         if sessionType == SessionType.RSVP{
             //guidedVM.initialSpeed = rsvpVM.wpm // ENDRE DENNE TIL FETCH FRA FIREBASE
@@ -82,15 +85,15 @@ struct GuidedView: View {
                                 .frame(width: 16, height: 16)
                                 .foregroundColor(Color.theme.text)
                         })
+                            .frame(width: 44, height: 44)
+                            .padding([.top, .leading])
                         Spacer()
                     }
-                    .padding()
                     Spacer()
                     if guidedVM.sessionType == SessionType.RSVP{
                         RSVPTextView(rsvpVM: rsvpVM)
                     }else{
                         KineticTextView(kineticVM: kineticVM)
-                        
                     }
                     Spacer()
                 }
@@ -101,55 +104,110 @@ struct GuidedView: View {
                         .ignoresSafeArea()
                         .transition(.move(edge: .bottom))
                 }else{
-                    VStack {
-                        Spacer()
+                    ZStack {
                         VStack {
-                            Text("Start a guided session with incrementing speed.")
-                                .foregroundColor(Color.white)
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
-                                .multilineTextAlignment(.center)
-                                .frame(width: screen.width / 1.4)
-
                             HStack {
-                                Button(action: {
-                                    startGuided(sessionType: SessionType.KINETIC)
-                                    firestoreManager.setTechnique(technique: "Kinetic")
-                                }, label: {
-                                    Text("Kinetic")
-                                        .font(Font.title3.bold())
-                                        .kerning(2)
-                                        .padding(.vertical, 15)
-                                        .padding(.horizontal, 25)
-                                        .foregroundColor(Color.black)
-                                        .background(Color.white)
-                                        .clipShape(Capsule())
-                            }) //:BUTTON
-
-                                Button(action: {
-                                    startGuided(sessionType: SessionType.RSVP)
-                                    firestoreManager.setTechnique(technique: "RSVP")
-                                }, label: {
-                                    Text("RSVP")
-                                        .font(Font.title3.bold())
-                                        .kerning(2)
-                                        .padding(.vertical, 15)
-                                        .padding(.horizontal, 35)
-                                        .foregroundColor(Color.black)
-                                        .background(Color.white)
-                                        .clipShape(Capsule())
-                            }) //:BUTTON
-                            } //: HSTACK
-                        } //: VSTACK
-                        .padding()
-                        .padding(.vertical, 30)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                                .stroke(Color.white, lineWidth: 1)
-                                .blendMode(.overlay)
-                        )
-                    Spacer()
+                                Text("Guided")
+                                    .font(Font.largeTitle)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                Spacer()
+                            }
+                            .padding()
+                            .padding(.leading)
+                            
+                            Spacer()
+                        }
+                        VStack {
+                            Spacer()
+                            Button {
+                                startGuided(sessionType: SessionType.KINETIC)
+                                firestoreManager.setTechnique(technique: "Kinetic")
+                            } label: {
+                                VStack {
+                                    HStack {
+                                        Text("Moving underline")
+                                            .font(Font.title.bold())
+                                            .kerning(2)
+                                            //.padding(.vertical, 15)
+                                            //.padding(.horizontal, 15)
+                                            .foregroundColor(Color.white)
+                                    } //: HSTACK
+                                    Divider()
+                                    Image("Kinetic_Illustration")
+                                        .frame(height: screen.height*0.12)
+                                        .scaleEffect(0.85)
+                                } //: VSTACK
+                            }
+                            .frame(width: screen.width * 0.8)
+                            .padding()
+                            .padding(.vertical, 10)
+//                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 35, style: .continuous))
+                            .background(ZStack {
+                                BlurView(style: .systemUltraThinMaterialDark)
+                            })
+                            .mask(RoundedRectangle(cornerRadius: 35, style: .continuous))
+                            .shadow(radius: 8, x: 4, y: 4)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 35, style: .continuous)
+                                    .stroke(Color.white, lineWidth: 1)
+                                    .blendMode(.overlay)
+                            )
+                            .overlay(ZStack {
+                                if !kinetic{
+                                    Image(systemName: "xmark")
+                                        .resizable()
+                                        .frame(width: screen.width * 0.8)
+                                }
+                            }
+                            )
+                            .padding(.bottom, screen.height * 0.025)
+                            .disabled(!kinetic)
+                            
+                            Button {
+                                startGuided(sessionType: SessionType.RSVP)
+                                firestoreManager.setTechnique(technique: "RSVP")
+                            } label: {
+                                VStack {
+                                    HStack {
+                                        Text("Word sequence")
+                                            .font(Font.title.bold())
+                                            .kerning(2)
+                                            //.padding(.vertical, 15)
+                                            //.padding(.horizontal, 25)
+                                            .foregroundColor(Color.white)
+                                    } //: HSTACK
+                                    Divider()
+                                    Image("RSVP_Illustration")
+                                        .frame(height: screen.height*0.12)
+                                } //: VSTACK
+                            }
+                            .frame(width: screen.width * 0.8)
+                            .padding()
+                            .padding(.vertical, 10)
+//                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 35, style: .continuous))
+                            .background(ZStack {
+                                BlurView(style: .systemUltraThinMaterialDark)
+                            })
+                            .mask(RoundedRectangle(cornerRadius: 35, style: .continuous))
+                            .shadow(radius: 8, x: 4, y: 4)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 35, style: .continuous)
+                                    .stroke(Color.white, lineWidth: 1)
+                                    .blendMode(.overlay)
+                            )
+                            .overlay(ZStack {
+                                if kinetic{
+                                    Image(systemName: "xmark")
+                                        .resizable()
+                                        .frame(width: screen.width * 0.8)
+                                }
+                            }
+                            )
+                            .disabled(kinetic)
+                        Spacer()
+                        }
+                        
                     }
                 }
             }
@@ -164,9 +222,10 @@ struct GuidedView: View {
         .background(
             ZStack{
                 if !guidedVM.started{
-                    Image("GuidedBG2")
+                    Image("GuidedBGCircles")
                         .resizable()
-                        .frame(width: screen.width, height: screen.height)
+                        .aspectRatio(contentMode: .fill)
+                        //.frame(width: screen.width, height: screen.height)
                         .ignoresSafeArea()
                 }
             }
@@ -177,6 +236,10 @@ struct GuidedView: View {
             guidedVM.initialSpeed = wpm
             rsvpVM.wpm = wpm
             kineticVM.wpm = wpm
+            let technique = await firestoreManager.getTechniqueGroup()
+            if technique == "R"{
+                kinetic = false
+            }
         }
     }
 }

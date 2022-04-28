@@ -12,6 +12,8 @@ struct SearchView: View {
     @EnvironmentObject var libraryVM: LibraryViewModel
     //@FocusState var startTF: Bool
     var animation: Namespace.ID
+    @Namespace var bookAnimation
+    @FocusState private var searchIsFocused: Bool
     var body: some View {
         VStack(spacing: 0){
             HStack(spacing: 15){
@@ -26,7 +28,9 @@ struct SearchView: View {
                     Image(systemName: "arrow.left")
                         .font(.title2)
                         .foregroundColor(Color.black.opacity(0.7))
+                    
                 })
+                    .frame(width: 44, height: 44)
                 
                 //Search bar
                 HStack{
@@ -35,6 +39,7 @@ struct SearchView: View {
                         .foregroundColor(.gray)
                     
                     TextField("Search", text: $libraryVM.searchText)
+                        .focused($searchIsFocused)
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal)
@@ -43,13 +48,12 @@ struct SearchView: View {
                             .shadow(color: .blue, radius: 1, x: 0, y: 0)
                 )
                 .cornerRadius(10)
-                .padding(.horizontal)
+                .padding(.horizontal, 10)
                 .matchedGeometryEffect(id: "SEARCHBAR", in: animation)
-                .padding(.trailing, 20)
+                .padding(.trailing, 40)
                 
             }
             .padding([.horizontal, .top])
-            .padding(.horizontal)
             
             
             if let books = libraryVM.searchedBooks{
@@ -68,9 +72,18 @@ struct SearchView: View {
                                 .font(.title.bold())
                                 .padding(.vertical)
                             
-                            StaggeredGrid(columns: 2,spacing: 20, list: books) {book in
-                                BookView(bookTitle: book.title, bookImg: book.img)
-                            }
+                                StaggeredGrid(columns: 2,spacing: 20, list: books) {book in
+                                    BookView(bookTitle: book.title, bookImg: book.img)
+                                        .matchedGeometryEffect(id: book.title, in: bookAnimation)
+                                        .onTapGesture{
+                                            searchIsFocused = false
+                                            withAnimation{
+                                                libraryVM.selectedBook = book
+                                                libraryVM.showBookView.toggle()
+                                            }
+                                        }
+                                }
+                            
                         }
                         .padding()
                     }
@@ -83,13 +96,26 @@ struct SearchView: View {
                 //.opacity(0.1)
                // .ignoresSafeArea()
         )
+        .overlay(
+            ZStack{
+                if libraryVM.showBookView{
+                    BookPageView(animation: bookAnimation)
+                        .environmentObject(libraryVM)
+                }
+            }
+        )
+        .onAppear{
+            searchIsFocused = true
+        }
     }
 }
 
 struct SearchView_Previews: PreviewProvider {
     @Namespace static var ns
     static var previews: some View {
-        SearchView(animation: ns)
-            .environmentObject(LibraryViewModel())
+        ZStack {
+            SearchView(animation: ns)
+                .environmentObject(LibraryViewModel())
+        }
     }
 }

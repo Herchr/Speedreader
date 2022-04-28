@@ -20,6 +20,77 @@ class FirestoreManager: ObservableObject{
     let storage = Storage.storage()
     @Published var currentText: String = ""
     
+    // MARK: - USER ORDER / LATIN SQUARE
+    func setCreationTimestampAndGroup(){
+        if let currentUser = Auth.auth().currentUser{
+            let userTimestamp = Date.timeIntervalSinceReferenceDate
+            let docRef = db.collection("UserData").document(currentUser.uid)
+            docRef.setData(["creationTimestamp": userTimestamp], merge: true){ error in
+                guard error == nil else{
+                    print("error creationTimestamp \(String(describing: error))")
+                    return
+                }
+                print("Creation timestamp successfully set")
+            }
+            
+            db.collection("UserData").getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    var userNum: Int = 0
+                    for document in querySnapshot!.documents {
+                        if document["creationTimestamp"] as? Double != nil{
+                            if document.documentID != currentUser.uid{
+                                userNum += 1
+                            }
+                        }
+                    }
+                    let groups = [["A", "K"], ["A", "R"], ["B", "K"], ["B", "R"]]
+                    let textGroup = groups[userNum % 4][0]
+                    let techniqueGroup = groups[userNum % 4][1]
+                    docRef.setData(["textGroup": textGroup, "techniqueGroup": techniqueGroup], merge: true){ error in
+                        guard error == nil else{
+                            print("error creating A/B groups \(String(describing: error))")
+                            return
+                        }
+                        print("Creation of A/B groups successfully set")
+                    }
+                    
+                }
+            }
+        }
+    }
+    func getTechniqueGroup() async -> String?{
+        if let currentUser = Auth.auth().currentUser{
+            do{
+                let doc = try await db.collection("UserData").document(currentUser.uid).getDocument().data()
+                guard let userData = doc else{
+                    print("error fetching techgroup")
+                    return nil
+                }
+                return userData["techniqueGroup"] as? String
+            }catch{
+                print("error error fetching techgroup")
+            }
+        }
+        return nil
+    }
+    func getTextGroup() async -> String?{
+        if let currentUser = Auth.auth().currentUser{
+            do{
+                let doc = try await db.collection("UserData").document(currentUser.uid).getDocument().data()
+                guard let userData = doc else{
+                    print("error fetching textgroup")
+                    return nil
+                }
+                return userData["textGroup"] as? String
+            }catch{
+                print("error error fetching textgroup")
+            }
+        }
+        return nil
+    }
+    
     // MARK: - WPM TEST + QUESTIONNAIRE
     func setWPMBefore(wpmBefore: Double){
         if let currentUser = Auth.auth().currentUser{
@@ -97,7 +168,7 @@ class FirestoreManager: ObservableObject{
                     print("\(String(describing: error))")
                     return
                 }
-                print("ComprehensionAfter successfully set")
+                print("technique successfully set")
             }
         }
     }

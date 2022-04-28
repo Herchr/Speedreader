@@ -18,12 +18,11 @@ struct BookPageBackButtonView: View {
                 }
             }, label: {
                 Image(systemName: "chevron.left")
-                    .resizable()
-                    .font(.system(size: 24, weight: .bold))
-                    .frame(width: 10, height: 14)
+                    //.resizable()
+                    .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.white)
-                    .padding()
             })
+                .frame(width: 44, height: 44)
             Spacer()
         }
     }

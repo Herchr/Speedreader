@@ -10,6 +10,7 @@ import FirebaseAuth
 
 struct Authentication: View {
     @EnvironmentObject var appViewModel: AppViewModel
+    var firestoreManager: FirestoreManager = FirestoreManager()
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var editingEmail: Bool = false
@@ -24,6 +25,7 @@ struct Authentication: View {
                 print("scooby")
                 return
             }
+            firestoreManager.setCreationTimestampAndGroup()
             appViewModel.activeFullScreenCover = ActiveFullScreenCover.WPMText
             print("Created user")
         }
@@ -53,11 +55,15 @@ struct Authentication: View {
                     HStack {
                         Icon(iconName: "envelope.open.fill", isEditing: $editingEmail)
                             //.scaleEffect(editingEmail ? 1.2 : 1)
-                        TextField("Email", text: $email){ isEditing in
+                        TextField("", text: $email){ isEditing in
                             editingEmail = isEditing
                             editingPassword = false
                         }
+                        .placeholder(when: email.isEmpty) {
+                            Text("Email").foregroundColor(.white.opacity(0.3))
+                        }
                         .textContentType(.emailAddress)
+                        .foregroundColor(.white)
                     }
                     .frame(width: screen.width*0.7, height: 52)
                     .overlay(
@@ -67,8 +73,12 @@ struct Authentication: View {
                     )
                     HStack {
                         Icon(iconName: "key.fill", isEditing: $editingPassword)
-                        SecureField("Password", text: $password)
+                        SecureField("", text: $password)
+                            .placeholder(when: password.isEmpty) {
+                                Text("Password").foregroundColor(.white.opacity(0.3))
+                            }
                             .textContentType(.password)
+                            .foregroundColor(.white)
                     }
                     .frame(width: screen.width*0.7, height: 52)
                     .overlay(
@@ -94,11 +104,12 @@ struct Authentication: View {
                             HStack {
                                 Text(signupToggle ? "Create account" : "Sign In")
                                     .font(Font.title3.bold())
+                                    .foregroundColor(.white)
                             }
                             .frame(width: screen.width*0.7, height: 50)
                             .background(
                                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .fill(Color.white)
+                                    .fill(Color.black.opacity(0.3))
                                     
                             )
                         })
@@ -124,32 +135,41 @@ struct Authentication: View {
                             Text(signupToggle ? "Sign in" : "Sign up")
                                 .font(Font.caption.bold())
                                 .foregroundColor(.white)
+                                .padding([.vertical, .trailing])
                         })
+                            
                         Spacer()
                     }
                     
                 }
                 .rotation3DEffect(Angle(degrees: rotation), axis: (x: 0.0, y: 1.0, z: 0.0))
                 .padding(screen.width*0.1)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+                //.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+                .background(ZStack {
+                    BlurView(style: .systemUltraThinMaterialDark)
+                })
+                .mask(RoundedRectangle(cornerRadius: 30, style: .continuous))
                 .background(
                     RoundedRectangle(cornerRadius: 30, style: .continuous)
                         .stroke(lineWidth: 4)
                         .foregroundStyle(.linearGradient(colors: [.white, .black], startPoint: .topLeading, endPoint: .bottomTrailing))
                         .blendMode(.overlay)
                 )
+                
                 .rotation3DEffect(Angle(degrees: rotation), axis: (x: 0.0, y: 1.0, z: 0.0))
                 
             } //: VSTACK
             .padding()
-            .background(
-                Image("GuidedBG3")
-                    .resizable()
-                    .frame(width: screen.width, height: screen.height)
-                    .ignoresSafeArea()
-            )
             
         } //: ZSTACK
+        .frame(width: screen.width, height: screen.height)
+        .background(
+            Image("GuidedBGCircles")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                //.frame(width: screen.width, height: screen.height)
+                .ignoresSafeArea()
+        )
     }
 }
 

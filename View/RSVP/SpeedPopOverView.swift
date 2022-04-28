@@ -23,23 +23,55 @@ struct SpeedPopOverView: View {
                     }
                 }
             VStack{
-                HStack {
-                    Text("Words per minute:")
-                        .font(Font.title3)
-                        .foregroundColor(Color.theme.text)
-                    Text("\(Int(rsvpVM.wpm))")
-                        .font(Font.title3.bold())
-                        .foregroundColor(Color.theme.text)
+                VStack {
+                    HStack {
+                        Text("Words per minute")
+                            .font(Font.subheadline)
+                            .foregroundColor(Color.theme.text)
+                        Spacer()
+                    }
+                    VStack {
+                        Slider(value: $rsvpVM.wpm, in: 50...600, step: 50)
+                        Text("\(Int(rsvpVM.wpm))")
+                            .font(Font.title3.bold())
+                            .foregroundColor(Color.theme.text)
+                        Button {
+                            withAnimation {
+                                rsvpVM.showSpeedPopOver = false
+                            }
+                        } label: {
+                            Text("Close")
+                                .foregroundColor(.blue)
+                                .padding(.top, 20)
+                        }
+                        
+                    }
                 }
-                Slider(value: $rsvpVM.wpm, in: 50...600, step: 50)
             } //:VSTACK
-            .padding(.vertical, 40)
-            .padding(.horizontal)
-            .background(.white, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .padding(40)
+            .padding(.top, 70)
+            .padding([.horizontal, .bottom], 30)
+            .background(.white, in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+            .overlay(
+                VStack {
+                    ZStack {
+                        ZStack(alignment: .bottom) {
+                            RoundedRectangle(cornerRadius: 30, style: .continuous)
+                                .frame(height: 50)
+                                .foregroundColor(Color.theme.accent)
+                            Rectangle()
+                                .frame(height: 25)
+                                .foregroundColor(Color.theme.accent)
+                        }
+                        Text("Speed settings")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                    }
+                    Spacer()
+                }
+            )
+            .padding(46)
             //.padding(.trailing,50)
             .padding(.top, 100)
-            .shadow(radius: 20)
             .scaleEffect(scaleValue)
             
         } //:ZSTACK
@@ -59,6 +91,6 @@ struct SpeedPopOverView: View {
 
 struct SpeedPopOverView_Previews: PreviewProvider {
     static var previews: some View {
-        RSVPView(rsvpVM: RSVPViewModel())
+        SpeedPopOverView(rsvpVM: RSVPViewModel())
     }
 }

@@ -18,6 +18,7 @@ struct ContinuePopUpView: View {
 //            content()
 //        }
 //    }
+    let maxSpeed: Double = 600
     func nextStage(){
         guidedVM.currentRound += 1
         withAnimation{
@@ -25,8 +26,8 @@ struct ContinuePopUpView: View {
         }
         
         if guidedVM.sessionType == SessionType.RSVP{
-            if rsvpVM.wpm + guidedVM.initialSpeed*0.333 > 500{
-                rsvpVM.wpm = 500
+            if rsvpVM.wpm + guidedVM.initialSpeed*0.333 > maxSpeed{
+                rsvpVM.wpm = maxSpeed
             }else{
                 rsvpVM.wpm += guidedVM.initialSpeed*0.333
             }
@@ -64,8 +65,8 @@ struct ContinuePopUpView: View {
                 }
             }
         }else{
-            if kineticVM.wpm + guidedVM.initialSpeed*0.333 > 500{
-                kineticVM.wpm = 500
+            if kineticVM.wpm + guidedVM.initialSpeed*0.333 > maxSpeed{
+                kineticVM.wpm = maxSpeed
             }else{
                 kineticVM.wpm += guidedVM.initialSpeed*0.333
             }

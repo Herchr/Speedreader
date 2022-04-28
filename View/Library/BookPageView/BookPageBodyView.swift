@@ -39,9 +39,9 @@ struct BookPageBodyView: View {
                         colors: [Color.theme.background.opacity(0), Color.theme.background]),
                            startPoint: .top, endPoint: .bottom
                        )
-                        .frame(width: screen.width, height: screen.height * 0.12)
-                        
+                        .frame(width: screen.width, height: screen.height * 0.15)
                 }
+                    .ignoresSafeArea()
              )
         }
     }

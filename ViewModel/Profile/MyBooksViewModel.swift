@@ -15,6 +15,9 @@ class MyBooksViewModel: ObservableObject {
     init(){
         self.books = coreDataManager.getBooks()
     }
+    func refresh(){
+        self.books = coreDataManager.getBooks()
+    }
     func setActiveBook(book: DownloadedBook){
         coreDataManager.setActiveBook(book: book)
     }
