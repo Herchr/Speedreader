@@ -153,16 +153,16 @@ struct GuidedView: View {
                                     .stroke(Color.white, lineWidth: 1)
                                     .blendMode(.overlay)
                             )
-                            .overlay(ZStack {
-                                if !kinetic{
-                                    Image(systemName: "xmark")
-                                        .resizable()
-                                        .frame(width: screen.width * 0.8)
-                                }
-                            }
-                            )
+//                            .overlay(ZStack {
+//                                if !kinetic{
+//                                    Image(systemName: "xmark")
+//                                        .resizable()
+//                                        .frame(width: screen.width * 0.8)
+//                                }
+//                            }
+//                            )
                             .padding(.bottom, screen.height * 0.025)
-                            .disabled(!kinetic)
+//                            .disabled(!kinetic)
                             
                             Button {
                                 startGuided(sessionType: SessionType.RSVP)
@@ -196,15 +196,15 @@ struct GuidedView: View {
                                     .stroke(Color.white, lineWidth: 1)
                                     .blendMode(.overlay)
                             )
-                            .overlay(ZStack {
-                                if kinetic{
-                                    Image(systemName: "xmark")
-                                        .resizable()
-                                        .frame(width: screen.width * 0.8)
-                                }
-                            }
-                            )
-                            .disabled(kinetic)
+//                            .overlay(ZStack {
+//                                if kinetic{
+//                                    Image(systemName: "xmark")
+//                                        .resizable()
+//                                        .frame(width: screen.width * 0.8)
+//                                }
+//                            }
+//                            )
+//                            .disabled(kinetic)
                         Spacer()
                         }
                         
@@ -232,7 +232,7 @@ struct GuidedView: View {
             
         )
         .task{
-            let wpm = await (firestoreManager.getWPMBefore() ?? 0)
+            let wpm = await (firestoreManager.getWPMBefore() ?? 300)
             guidedVM.initialSpeed = wpm
             rsvpVM.wpm = wpm
             kineticVM.wpm = wpm

@@ -40,13 +40,13 @@ struct BookPageHeadView: View {
                             .foregroundColor(.white)
                         Spacer()
                     }
-                    .frame(width: screen.width * 0.5, height: screen.height*0.135)
+                    .frame(width: screen.width * 0.5, height: screen.height*0.16)
                     .padding(.horizontal, 5)
                     // DOWNLOAD BUTTON
                     DownloadButton(downloaded: $downloaded, loadContent: $loadContent)
                 } //: VSTACK
             } //: HSTACK
-            .padding(.top, screen.height*0.04)
+            .padding(.top, screen.height*0.022)
             .padding(.leading, 35)
             .onAppear{
                 if libraryVM.selectedBook.title.count > 0{

@@ -16,7 +16,7 @@ class KineticViewModel: ObservableObject {
     @Published var text: [String] = [String]()
     var currentIndex: Int = 0  // Set to users index of the current book
     @Published var activeBook: DownloadedBook?
-    @Published var kineticText: [[String]]?// = [[""]]//Constants.dummyText.components(separatedBy: " ") //Set to empty array
+    @Published var kineticText: [[String]]? //= [[""]] //Constants.dummyText.components(separatedBy: " ") //Set to empty array
     @Published var wpm: Double = 300
     @Published var isPlaying: Bool = false
     //@Published var showKinetic: Bool = true

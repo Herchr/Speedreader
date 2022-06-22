@@ -95,7 +95,7 @@ class FirestoreManager: ObservableObject{
     func setWPMBefore(wpmBefore: Double){
         if let currentUser = Auth.auth().currentUser{
             let docRef = db.collection("UserData").document(currentUser.uid)
-            docRef.setData(["WPMBefore": wpmBefore > 400 ? 400 : wpmBefore], merge: true){ error in
+            docRef.setData(["WPMBefore": wpmBefore > 400 ? 400 : wpmBefore, "WPMBeforeExceeding400": wpmBefore > 400 ? wpmBefore : 0, "Email": currentUser.email ?? ""], merge: true){ error in
                 guard error == nil else{
                     print("error wpmbefore \(String(describing: error))")
                     return

@@ -18,7 +18,7 @@ struct KineticTextView: View {
                         HStack(spacing: 0) {
                             ForEach(Array(zip(sentenceArray.indices, sentenceArray)), id: \.0){ j, w in
                                 Text("\(w) ")
-                                    .font(Font.system(.body, design: .serif))
+                                    .font(Font.system(.body, design: .serif)) 
                                     .foregroundColor(Color.theme.text)
                             }
                         }

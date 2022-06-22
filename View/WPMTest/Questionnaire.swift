@@ -37,7 +37,17 @@ struct Questionnaire: View {
             } //: SCROLLVIEWREADER
             .padding(.bottom)
         } //: VSTACK
-        .background(LinearGradient(colors: [Color.theme.accent, Color.theme.pinkGradient], startPoint: .topLeading, endPoint: .bottomTrailing))
+        .background(
+            ZStack{
+                Image("GuidedBG")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: screen.width, height: screen.height)
+                    .ignoresSafeArea()
+            }
+            
+        )
+//        .background(LinearGradient(colors: [Color.theme.accent, Color.theme.pinkGradient], startPoint: .topLeading, endPoint: .bottomTrailing))
         .environmentObject(questionnaireVM)
 //        .onAppear{
 //            if initialTest{

@@ -20,10 +20,14 @@ struct RSVPView: View {
             if let img = rsvpVM.activeBook?.img{
                 if !rsvpVM.isPlaying{
                     VStack(spacing:0){
-                        Text("Practice")
-                            .font(Font.largeTitle.bold())
-                            .foregroundColor(.white)
-                            //.padding(.bottom, 20)
+                        HStack{
+                            Text("Practice")
+                                .font(Font.largeTitle.bold())
+                                .foregroundColor(.white)
+                                //.padding(.bottom, 20)
+                            Spacer()
+                        }
+                        .padding(.leading, 20)
                         ZStack {
                             //BookOnShelfView(bookTitle: "Siddhartha")
                             BookOnShelfView(bookTitle: rsvpVM.activeBook?.title ?? "", bookImg: UIImage(data: img))
